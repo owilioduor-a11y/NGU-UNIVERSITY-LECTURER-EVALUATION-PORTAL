@@ -5,7 +5,7 @@
 A lightweight, glassmorphic web application designed for academic quality assurance. This portal allows students to evaluate lecturers anonymously and provides administrators with departmental performance data.
 
 ##  Live Demo
-[Insert your GitHub Pages Link Here]
+https://github.com/owilioduor-a11y
 
 ##  Features
 
@@ -34,7 +34,7 @@ A lightweight, glassmorphic web application designed for academic quality assura
 *  **admin password** OWILI9526
 
 ## ⚙️ Installation
-1. Clone the repository: `git clone https://github.com/your-username/ngu-portal.git`
+1. Clone the repository: `git clone https://https://github.com/owilioduor-a11y/NGU-UNIVERSITY-LECTURER-EVALUATION-PORTAL.git`
 2. Open `index.html` in any modern web browser.
 3. To deploy, push to the `main` branch and enable **GitHub Pages** in settings.
 
