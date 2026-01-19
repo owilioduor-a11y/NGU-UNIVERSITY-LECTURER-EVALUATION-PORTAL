@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NGU Student Performance Portal</title>
+    <style>
+        :root {
+            --primary: #003366; 
+            --danger: #b91c1c;
+            --success: #15803d;
+            --bg-overlay: rgba(0, 0, 0, 0.55);
+            --card-bg: rgba(255, 255, 255, 0.12);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --text-main: #ffffff;
+            --text-muted: #cbd5e1;
+            --input-bg: rgba(0, 0, 0, 0.2);
+        }
+
+        body.light-mode {
+            --bg-overlay: rgba(255, 255, 255, 0.75);
+            --card-bg: rgba(255, 255, 255, 0.9);
+            --glass-border: rgba(0, 51, 102, 0.2);
+            --text-main: #0f172a;
+            --text-muted: #475569;
+            --input-bg: rgba(255, 255, 255, 0.9);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, sans-serif; transition: 0.3s ease; }
+        body { background-image: url('https://images.unsplash.com/photo-1504384308090-c894fdcc538d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80'); background-size: cover; background-position: center; background-attachment: fixed; color: var(--text-main); min-height: 100vh; overflow-x: hidden; }
+        body::before { content: ""; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: var(--bg-overlay); z-index: -1; }
+
+        .glass { background: var(--card-bg); -webkit-backdrop-filter: blur(15px); backdrop-filter: blur(15px); border: 1px solid var(--glass-border); border-radius: 1.25rem; padding: 2rem; box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
+        .container { width: 92%; max-width: 1200px; margin: 0 auto; padding: 1rem 0; }
+        .page-view { display: none; }
+        .page-view.active { display: block; animation: fadeIn 0.4s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
+
+        .nav-controls { position: fixed; bottom: 20px; right: 20px; display: flex; gap: 10px; z-index: 1001; }
+        .nav-btn { background: var(--primary); color: white; border: none; width: 50px; height: 50px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+        .nav-btn:disabled { background: #64748b; cursor: not-allowed; opacity: 0.5; }
+
+        table { width: 100%; border-collapse: collapse; min-width: 800px; margin-top: 1rem; }
+        th { text-align: left; background: var(--primary); color: white; padding: 1rem; }
+        td { padding: 1rem; border-bottom: 1px solid var(--glass-border); color: var(--text-main); }
+
+        .btn { display: inline-block; width: 100%; padding: 1rem; border-radius: 0.75rem; font-weight: 700; cursor: pointer; border: none; text-align: center; margin-top: 0.5rem; text-decoration: none; }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-success { background: var(--success); color: white; }
+        .btn-danger { background: var(--danger); color: white; }
+        .btn-outline { background: transparent; border: 1px solid var(--glass-border); color: var(--text-main); }
+        
+        input, select, textarea { width: 100%; padding: 0.9rem; border-radius: 0.75rem; border: 1px solid var(--glass-border); background: var(--input-bg); color: var(--text-main); margin-bottom: 0.8rem; }
+        .theme-toggle { position: fixed; top: 15px; right: 15px; z-index: 1000; background: var(--primary); color: white; border-radius: 50%; width: 45px; height: 45px; cursor: pointer; border: none; }
+
+        .link-text { color: var(--text-muted); font-size: 0.85rem; cursor: pointer; text-decoration: underline; }
+        .auth-footer { margin-top: 1rem; text-align: center; display: flex; flex-direction: column; gap: 8px; }
+
+        .lec-item { padding: 12px; margin: 8px 0; background: rgba(255,255,255,0.05); border-radius: 10px; cursor: pointer; border: 2px solid transparent; }
+        .lec-item.selected { border-color: var(--primary); background: rgba(37, 99, 235, 0.2); }
+        .lec-item.completed { opacity: 0.6; pointer-events: none; background: rgba(34, 197, 94, 0.2); border: 1px solid #22c55e; }
+        .voted-badge { float: right; color: #22c55e; font-weight: bold; font-size: 0.7rem; }
+
+        .date-notice { font-size: 0.85rem; padding: 10px; border-radius: 8px; margin-bottom: 15px; text-align: center; background: rgba(239, 68, 68, 0.2); border: 1px solid #ef4444; }
+
+        @media print { .no-print { display: none !important; } body::before { display: none; } .glass { background: white !important; color: black !important; backdrop-filter: none; border: 1px solid #ccc; } td, th { color: black !important; border-bottom: 1px solid #eee; } }
+    </style>
+</head>
+<body>
+
+    <button class="theme-toggle" onclick="toggleTheme()" id="theme-btn">🌙</button>
+
+    <div class="nav-controls no-print">
+        <button class="nav-btn" onclick="navBack()" id="prevBtn" title="Previous Page">←</button>
+        <button class="nav-btn" onclick="navForward()" id="nextBtn" title="Next Page">→</button>
+    </div>
+
+    <div id="auth-page" class="container page-view active">
+        <div class="glass" style="max-width: 450px; margin: 4rem auto;">
+            <div style="text-align: center; margin-bottom: 1rem;">
+                <h2 style="color: #fff; text-transform: uppercase; letter-spacing: 1px;">NGU Portal</h2>
+                <p style="font-size: 0.8rem; color: var(--text-muted);">Nexus Global University</p>
+            </div>
+            <form onsubmit="handleAuth(event)">
+                <input type="email" id="login-email" placeholder="Email Address" required>
+                <input type="password" id="login-pass" placeholder="Password" required>
+                <button type="submit" class="btn btn-primary">Sign In</button>
+            </form>
+            <div class="auth-footer">
+                <span class="link-text" onclick="showPage('forgot-page')">Forgot Password?</span>
+                <span class="link-text" onclick="showPage('signup-page')">Don't have an account? Sign Up</span>
+                <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 10px;">
+                    Staff? 
+                    <a href="javascript:void(0)" onclick="showPage('admin-gate')" style="color: #ef4444; font-weight: bold;">Admin</a> | 
+                    <a href="javascript:void(0)" onclick="showPage('lec-gate')" style="color: #3b82f6; font-weight: bold;">Lecturer</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div id="signup-page" class="container page-view">
+        <div class="glass" style="max-width: 450px; margin: 4rem auto;">
+            <h2 style="text-align: center; margin-bottom: 1rem;">Create Account</h2>
+            <form onsubmit="handleSignUp(event)">
+                <input type="text" id="reg-name" placeholder="Full Name" required>
+                <input type="email" id="reg-email" placeholder="Email Address" required>
+                <input type="password" id="reg-pass" placeholder="Create Password" required>
+                <button type="submit" class="btn btn-success">Verify Email & Register</button>
+                <button type="button" class="btn btn-outline" onclick="showPage('auth-page')">Back to Login</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="forgot-page" class="container page-view">
+        <div class="glass" style="max-width: 450px; margin: 4rem auto;">
+            <h2 style="text-align: center;">Reset Password</h2>
+            <p style="font-size: 0.8rem; color: var(--text-muted); text-align: center; margin-bottom: 1rem;">Enter your email to receive a reset link.</p>
+            <input type="email" id="reset-email" placeholder="Registered Email">
+            <button class="btn btn-primary" onclick="handleForgot()">Send Reset Link</button>
+            <button class="btn btn-outline" onclick="showPage('auth-page')">Back to Login</button>
+        </div>
+    </div>
+
+    <div id="home-page" class="container page-view">
+        <header class="glass" style="text-align: center; margin-bottom: 1.5rem;">
+            <h1>NGU Lecturer Evaluation</h1>
+            <p>Quality Assurance & Performance Portal</p>
+        </header>
+        <div class="glass" style="max-width: 600px; margin: 0 auto;">
+            <div id="date-warning" class="date-notice" style="display:none;"></div>
+            
+            <h3>Academic Session Details</h3>
+            <label>Full Name</label>
+            <input type="text" id="stu-name" placeholder="Enter your full name" readonly>
+            
+            <label>🪪 Admission Number</label>
+            <input type="text" id="stu-adm" placeholder="e.g. NGU-CIT-2024-001">
+
+            <label>Department</label>
+            <select id="stu-dept">
+                <option value="Computing & IT">Computing & IT</option>
+                <option value="Engineering & Tech">Engineering & Tech</option>
+                <option value="Business & Economics">Business & Economics</option>
+                <option value="Media & Communication">Media & Communication</option>
+                <option value="Science & Mathematics">Science & Mathematics</option>
+            </select>
+
+            <label>Course of Study</label>
+            <select id="stu-course">
+                <option value="BSc. Computer Science">BSc. Computer Science</option>
+                <option value="BSc. Information Technology">BSc. Information Technology</option>
+                <option value="BSc. Software Engineering">BSc. Software Engineering</option>
+                <option value="BSc. Applied Computer Science">BSc. Applied Computer Science</option>
+                <option value="BSc. Business Information Technology">BSc. Business Information Technology</option>
+                <option value="BSc. Telecommunications Engineering">BSc. Telecommunications Engineering</option>
+                <option value="BSc. Electrical Engineering">BSc. Electrical Engineering</option>
+                <option value="BSc. Mathematics & CS">BSc. Mathematics & CS</option>
+                <option value="BSc. Data Science">BSc. Data Science</option>
+                <option value="BSc. Cyber Security">BSc. Cyber Security</option>
+                <option value="BSc. Mechanical Engineering">BSc. Mechanical Engineering</option>
+                <option value="BSc. Civil Engineering">BSc. Civil Engineering</option>
+            </select>
+
+            <label>Academic Year</label>
+            <select id="stu-year" onchange="updateSemesterList()"><option value="1">Year 1</option><option value="2">Year 2</option><option value="3">Year 3</option><option value="4">Year 4</option></select>
+            
+            <label>Semester</label>
+            <select id="stu-sem"></select>
+            
+            <button class="btn btn-primary" id="access-btn" onclick="goToReview()">Access Evaluation Units</button>
+        </div>
+    </div>
+
+    <div id="review-page" class="container page-view">
+        <div class="glass">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; border-bottom: 1px solid var(--glass-border); padding-bottom: 15px;">
+                <div>
+                    <h2 id="display-course" style="color: var(--primary); text-transform: uppercase;">COURSE NAME</h2>
+                    <h4 style="color: var(--text-muted);">Unit Evaluations</h4>
+                    <p id="review-stat" style="color: #22c55e; font-weight: bold;"></p>
+                </div>
+                <button class="btn btn-danger" style="width: auto; padding: 0.5rem 1rem;" onclick="logout()">Exit Portal</button>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <div id="lec-list-container">
+                    <p style="font-size: 0.9rem; margin-bottom: 5px;">Select an active unit to rate:</p>
+                    <div id="lec-list" style="max-height: 400px; overflow-y: auto; background: rgba(0,0,0,0.1); padding: 10px; border-radius: 10px;"></div>
+                </div>
+
+                <div id="evaluation-form" style="opacity: 0.5; pointer-events: none;">
+                    <h4 id="selected-lec-display" style="border-bottom: 2px solid var(--primary); padding-bottom: 5px;">Select a unit...</h4>
+                    <div style="text-align: center; margin: 1.5rem 0;">
+                        <label style="display: block; margin-bottom: 10px;">Overall Satisfaction Score</label>
+                        <div id="rating-val" style="font-size: 2.5rem; font-weight: 800; color: #22c55e;">85%</div>
+                        <input type="range" id="rating-slider" min="0" max="100" value="85">
+                    </div>
+                    <textarea id="comments" rows="4" placeholder="How can this lecturer improve their delivery?"></textarea>
+                    <button class="btn btn-primary" id="submit-single-btn" onclick="submitReview()">Confirm & Save Review</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="admin-gate" class="container page-view">
+        <div class="glass" style="max-width: 450px; margin: 4rem auto;">
+            <h2 style="text-align: center;">NGU Admin Gate</h2>
+            <input type="text" id="admin-user" placeholder="Staff Username">
+            <input type="password" id="admin-pass" placeholder="Staff Password">
+            <button class="btn btn-primary" onclick="verifyAdmin()">Authorize</button>
+            <button class="btn btn-outline" onclick="showPage('auth-page')">Return to Student Portal</button>
+        </div>
+    </div>
+
+    <div id="admin-dashboard" class="container page-view">
+        <div class="glass">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 20px;">
+                <h2>NGU Performance Management</h2>
+                <div style="display: flex; gap: 10px;" class="no-print">
+                    <button class="btn btn-danger" style="width: auto;" onclick="clearAllRecords()">Wipe All Data</button>
+                    <button class="btn btn-outline" style="width: auto;" onclick="window.print()">Export PDF</button>
+                    <button class="btn btn-primary" style="width: auto;" onclick="logout()">Close Session</button>
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 10px; margin-bottom: 20px;">
+                <div>
+                    <label>Evaluation Start Date</label>
+                    <input type="date" id="admin-start-date" onchange="updateDates()">
+                </div>
+                <div>
+                    <label>Evaluation End Date</label>
+                    <input type="date" id="admin-end-date" onchange="updateDates()">
+                </div>
+                <div>
+                    <label>Filter by Department</label>
+                    <select id="admin-filter-dept" onchange="loadDashboard()">
+                        <option value="All">All Departments</option>
+                        <option value="Computing & IT">Computing & IT</option>
+                        <option value="Engineering & Tech">Engineering & Tech</option>
+                        <option value="Business & Economics">Business & Economics</option>
+                        <option value="Media & Communication">Media & Communication</option>
+                        <option value="Science & Mathematics">Science & Mathematics</option>
+                    </select>
+                </div>
+            </div>
+
+            <div style="overflow-x: auto;">
+                <table id="records-table">
+                    <thead><tr><th>Date</th><th>Student / ADM</th><th>Dept / Course</th><th>Year/Sem</th><th>Subject & Lecturer</th><th>Score</th></tr></thead>
+                    <tbody id="records-body"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div id="lec-gate" class="container page-view">
+        <div class="glass" style="max-width: 450px; margin: 4rem auto;">
+            <h2 style="text-align: center;">Lecturer Portal</h2>
+            <p style="text-align: center; font-size: 0.8rem; margin-bottom: 1rem;">Access your performance feedback</p>
+            <input type="text" id="lec-user" placeholder="Lecturer Name (e.g. Dr. Matin)">
+            <input type="password" id="lec-pass" placeholder="Staff PIN">
+            <button class="btn btn-primary" onclick="verifyLecturer()">View Ratings</button>
+            <button class="btn btn-outline" onclick="showPage('auth-page')">Back</button>
+        </div>
+    </div>
+
+    <div id="lec-dashboard" class="container page-view">
+        <div class="glass">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <h2 id="lec-welcome">Welcome, Dr.</h2>
+                <div style="display: flex; gap: 10px;">
+                    <button class="btn btn-outline" style="width: auto;" onclick="toggleLecSettings()">Settings</button>
+                    <button class="btn btn-primary" style="width: auto;" onclick="logout()">Sign Out</button>
+                </div>
+            </div>
+
+            <div id="lec-settings" style="display:none; margin-top: 1.5rem; padding: 1.5rem; background: rgba(0,0,0,0.1); border-radius: 10px;">
+                <h3>Account Security</h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px;">
+                    <input type="password" id="new-lec-pin" placeholder="New 4-Digit PIN">
+                    <button class="btn btn-success" style="margin-top:0" onclick="updateLecPIN()">Update PIN</button>
+                </div>
+            </div>
+
+            <hr style="margin: 1.5rem 0; opacity: 0.2;">
+            <div id="lec-stats-container"></div>
+            <h3>Anonymous Feedback</h3>
+            <div id="lec-comments-container" style="margin-top: 1rem;"></div>
+        </div>
+    </div>
+
+    <script>
+        // CONFIGURATION & DYNAMIC DATA
+        let EVALUATION_PERIOD = JSON.parse(localStorage.getItem('ngu_dates')) || {
+            start: "2024-01-01",
+            end: "2026-12-31"
+        };
+
+        const lecturerPool = ["Dr. Matin", "Prof. Kwesi", "Dr. Owili", "Prof. Njeri", "Dr. Rodriguez", "Dr. Sang", "Prof. Okello", "Dr. Amina", "Dr. Mutua", "Prof. Zhao"];
+        
+        const units = [
+            "Intro to Computing", "Discrete Math", "Software Design", "Data Structures", 
+            "Network Security", "AI Principles", "Ethics in Tech", "Database Management", 
+            "Web Development", "Operating Systems", "Cloud Computing", "Mobile Dev"
+        ];
+
+        const lecturersData = {};
+        for(let y=1; y<=4; y++) {
+            lecturersData[y] = { "Sem 1": [], "Sem 2": [] };
+            ["Sem 1", "Sem 2"].forEach(s => {
+                const count = Math.floor(Math.random() * 4) + 7;
+                for(let i=0; i<count; i++) {
+                    lecturersData[y][s].push({
+                        s: units[Math.floor(Math.random() * units.length)] + " " + (i+1),
+                        l: lecturerPool[Math.floor(Math.random() * lecturerPool.length)]
+                    });
+                }
+            });
+        }
+
+        let pageHistory = ['auth-page'];
+        let currentIndex = 0;
+        let selectedLecObj = null;
+        let currentStudentEmail = "";
+        let activeLecName = "";
+
+        window.onload = () => {
+            document.getElementById('admin-start-date').value = EVALUATION_PERIOD.start;
+            document.getElementById('admin-end-date').value = EVALUATION_PERIOD.end;
+            checkEvaluationDate();
+            updateSemesterList();
+            loadDashboard();
+            updateNavButtons();
+        };
+
+        function updateDates() {
+            EVALUATION_PERIOD.start = document.getElementById('admin-start-date').value;
+            EVALUATION_PERIOD.end = document.getElementById('admin-end-date').value;
+            localStorage.setItem('ngu_dates', JSON.stringify(EVALUATION_PERIOD));
+            checkEvaluationDate();
+        }
+
+        function checkEvaluationDate() {
+            const now = new Date();
+            const start = new Date(EVALUATION_PERIOD.start);
+            const end = new Date(EVALUATION_PERIOD.end);
+            const btn = document.getElementById('access-btn');
+            const warning = document.getElementById('date-warning');
+            
+            if (now < start || now > end) {
+                if(btn) btn.disabled = true;
+                if(warning) {
+                    warning.style.display = "block";
+                    warning.innerText = `Evaluation Portal is CLOSED (Active: ${EVALUATION_PERIOD.start} to ${EVALUATION_PERIOD.end})`;
+                }
+            } else {
+                if(btn) btn.disabled = false;
+                if(warning) warning.style.display = "none";
+            }
+        }
+
+        function getUsers() { return JSON.parse(localStorage.getItem('ngu_users')) || []; }
+
+        function handleSignUp(e) {
+            e.preventDefault();
+            const name = document.getElementById('reg-name').value;
+            const email = document.getElementById('reg-email').value;
+            const pass = document.getElementById('reg-pass').value;
+            const users = getUsers();
+            if(users.find(u => u.email === email)) return alert("User already exists!");
+            const code = Math.floor(1000 + Math.random() * 9000);
+            const userCode = prompt(`[SIMULATION] Verification email sent.\n\nEnter code: ${code}`);
+            if(userCode == code) {
+                users.push({name, email, pass});
+                localStorage.setItem('ngu_users', JSON.stringify(users));
+                alert("Account verified! Logging you in...");
+                currentStudentEmail = email;
+                document.getElementById('stu-name').value = name;
+                showPage('home-page');
+            }
+        }
+
+        function handleAuth(e) { 
+            e.preventDefault(); 
+            const email = document.getElementById('login-email').value;
+            const pass = document.getElementById('login-pass').value;
+            const users = getUsers();
+            const validUser = users.find(u => u.email === email && u.pass === pass);
+            if(validUser) {
+                currentStudentEmail = email;
+                document.getElementById('stu-name').value = validUser.name;
+                showPage('home-page');
+            } else { alert("Invalid credentials."); }
+        }
+
+        function verifyLecturer() {
+            const name = document.getElementById('lec-user').value;
+            const pass = document.getElementById('lec-pass').value;
+            const savedPINs = JSON.parse(localStorage.getItem('ngu_lec_pins')) || {};
+            const correctPIN = savedPINs[name] || "1234"; 
+
+            if(lecturerPool.includes(name) && pass === correctPIN) {
+                activeLecName = name;
+                renderLecturerDashboard(name);
+                showPage('lec-dashboard');
+            } else { alert("Lecturer not found or invalid PIN."); }
+        }
+
+        function toggleLecSettings() {
+            const settings = document.getElementById('lec-settings');
+            settings.style.display = settings.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function updateLecPIN() {
+            const newPin = document.getElementById('new-lec-pin').value;
+            if(newPin.length < 4) return alert("PIN must be at least 4 digits.");
+            const savedPINs = JSON.parse(localStorage.getItem('ngu_lec_pins')) || {};
+            savedPINs[activeLecName] = newPin;
+            localStorage.setItem('ngu_lec_pins', JSON.stringify(savedPINs));
+            alert("PIN Updated successfully!");
+            toggleLecSettings();
+        }
+
+        function renderLecturerDashboard(lecName) {
+            document.getElementById('lec-welcome').innerText = `Welcome, ${lecName}`;
+            const reviews = JSON.parse(localStorage.getItem('allReviews')) || [];
+            const myReviews = reviews.filter(r => r.lec.includes(lecName));
+            
+            const avg = myReviews.length ? (myReviews.reduce((a, b) => a + parseInt(b.score), 0) / myReviews.length).toFixed(1) : 0;
+            
+            document.getElementById('lec-stats-container').innerHTML = `
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+                    <div class="glass" style="text-align:center"><h3>Overall Rating</h3><h1 style="color:#22c55e">${avg}%</h1></div>
+                    <div class="glass" style="text-align:center"><h3>Total Evaluations</h3><h1>${myReviews.length}</h1></div>
+                </div>
+            `;
+            
+            document.getElementById('lec-comments-container').innerHTML = myReviews.map(r => `
+                <div style="background:rgba(255,255,255,0.05); padding:15px; border-radius:10px; margin-bottom:10px;">
+                    <p>"${r.comment}"</p>
+                    <small style="color:var(--text-muted)">Score given: ${r.score}% | Date: ${r.date}</small>
+                </div>
+            `).join('') || "<p>No feedback yet.</p>";
+        }
+
+        function showPage(id, saveHistory = true) {
+            document.querySelectorAll('.page-view').forEach(p => p.classList.remove('active'));
+            const target = document.getElementById(id);
+            if(target) target.classList.add('active');
+            if(saveHistory && pageHistory[currentIndex] !== id) {
+                pageHistory = pageHistory.slice(0, currentIndex + 1);
+                pageHistory.push(id);
+                currentIndex++;
+            }
+            updateNavButtons();
+        }
+
+        function navBack() { if(currentIndex > 0) { currentIndex--; showPage(pageHistory[currentIndex], false); } }
+        function navForward() { if(currentIndex < pageHistory.length - 1) { currentIndex++; showPage(pageHistory[currentIndex], false); } }
+        function updateNavButtons() {
+            document.getElementById('prevBtn').disabled = currentIndex === 0;
+            document.getElementById('nextBtn').disabled = currentIndex === pageHistory.length - 1;
+        }
+
+        function updateSemesterList() {
+            const semSelect = document.getElementById('stu-sem');
+            semSelect.innerHTML = "";
+            for(let i=1; i<=2; i++) {
+                let opt = document.createElement('option');
+                opt.value = `Sem ${i}`; opt.innerText = `Semester ${i}`;
+                semSelect.appendChild(opt);
+            }
+        }
+
+        function goToReview() {
+            const name = document.getElementById('stu-name').value;
+            const adm = document.getElementById('stu-adm').value;
+            const course = document.getElementById('stu-course').value;
+            if(!name || !adm) return alert("Please fill in Name and Admission Number.");
+            document.getElementById('display-course').innerText = course;
+            const year = document.getElementById('stu-year').value;
+            const sem = document.getElementById('stu-sem').value;
+            renderLecturerList(year, sem);
+            showPage('review-page');
+        }
+
+        function renderLecturerList(year, sem) {
+            const list = document.getElementById('lec-list');
+            list.innerHTML = "";
+            const data = (lecturersData[year] && lecturersData[year][sem]) ? lecturersData[year][sem] : [];
+            const allReviews = JSON.parse(localStorage.getItem('allReviews')) || [];
+            
+            let countCompleted = 0;
+            data.forEach((item) => {
+                const hasVoted = allReviews.some(r => r.email === currentStudentEmail && r.lec === `${item.s} - ${item.l}` && r.yearSem === `Y${year} ${sem}`);
+                let div = document.createElement('div');
+                div.className = `lec-item ${hasVoted ? 'completed' : ''}`;
+                div.innerHTML = `<strong>${item.s}</strong><br><small>${item.l}</small> ${hasVoted ? '<span class="voted-badge">SUBMITTED</span>' : ''}`;
+                if(!hasVoted) {
+                    div.onclick = () => {
+                        document.querySelectorAll('.lec-item').forEach(d => d.classList.remove('selected'));
+                        div.classList.add('selected');
+                        selectedLecObj = item;
+                        enableReviewForm(item);
+                    };
+                } else { countCompleted++; }
+                list.appendChild(div);
+            });
+            document.getElementById('review-stat').innerText = (data.length - countCompleted) > 0 ? `${data.length - countCompleted} Units Pending` : "All Units Evaluated.";
+        }
+
+        function enableReviewForm(item) {
+            const form = document.getElementById('evaluation-form');
+            form.style.opacity = "1"; form.style.pointerEvents = "all";
+            document.getElementById('selected-lec-display').innerText = `${item.s}`;
+        }
+
+        const slider = document.getElementById('rating-slider');
+        if(slider) slider.oninput = function() { document.getElementById('rating-val').innerText = this.value + '%'; };
+
+        function submitReview() {
+            const allReviews = JSON.parse(localStorage.getItem('allReviews')) || [];
+            const year = document.getElementById('stu-year').value;
+            const sem = document.getElementById('stu-sem').value;
+            const review = {
+                date: new Date().toLocaleString(),
+                name: document.getElementById('stu-name').value + " (" + document.getElementById('stu-adm').value + ")",
+                course: document.getElementById('stu-course').value,
+                dept: document.getElementById('stu-dept').value,
+                email: currentStudentEmail,
+                yearSem: `Y${year} ${sem}`,
+                lec: `${selectedLecObj.s} - ${selectedLecObj.l}`,
+                score: slider.value,
+                comment: document.getElementById('comments').value || "No comment."
+            };
+            allReviews.push(review);
+            localStorage.setItem('allReviews', JSON.stringify(allReviews));
+            document.getElementById('comments').value = "";
+            document.getElementById('evaluation-form').style.opacity = "0.5";
+            document.getElementById('evaluation-form').style.pointerEvents = "none";
+            alert(`Review saved.`);
+            renderLecturerList(year, sem);
+            loadDashboard();
+            updateNavButtons();
+        }
+
+        function verifyAdmin() {
+            if(document.getElementById('admin-user').value === "Peter Owili" && document.getElementById('admin-pass').value === "OWILI9526") {
+                showPage('admin-dashboard');
+            } else { alert("Unauthorized."); }
+        }
+
+        function loadDashboard() {
+            const tbody = document.getElementById('records-body');
+            if(!tbody) return;
+            const reviews = JSON.parse(localStorage.getItem('allReviews')) || [];
+            const filterDept = document.getElementById('admin-filter-dept').value;
+
+            const filteredReviews = filterDept === "All" 
+                ? reviews 
+                : reviews.filter(r => r.dept === filterDept);
+
+            tbody.innerHTML = filteredReviews.map(r => `
+                <tr>
+                    <td><small>${r.date}</small></td>
+                    <td>${r.name}</td>
+                    <td><span style="font-size:0.7rem; color:var(--text-muted)">${r.dept}</span><br>${r.course}</td>
+                    <td>${r.yearSem}</td>
+                    <td>${r.lec}</td>
+                    <td><strong>${r.score}%</strong></td>
+                </tr>`).reverse().join('');
+        }
+
+        function clearAllRecords() { if(confirm("Wipe all data?")) { localStorage.removeItem('allReviews'); loadDashboard(); } }
+        function logout() { location.reload(); }
+        function toggleTheme() {
+            document.body.classList.toggle('light-mode');
+            document.getElementById('theme-btn').innerText = document.body.classList.contains('light-mode') ? '☀️' : '🌙';
+        }
+        function handleForgot() { alert("Simulated: Reset link sent to your email."); }
+    </script>
+</body>
+</html>
