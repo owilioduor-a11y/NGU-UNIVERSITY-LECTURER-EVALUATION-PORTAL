@@ -5,7 +5,7 @@
 A lightweight, glassmorphic web application designed for academic quality assurance. This portal allows students to evaluate lecturers anonymously and provides administrators with departmental performance data.
 
 ##  Live Demo
-https://github.com/owilioduor-a11y
+https://github.com/owilioduor-a11y/NGU-UNIVERSITY-LECTURER-EVALUATION-PORTAL
 
 ##  Features
 
