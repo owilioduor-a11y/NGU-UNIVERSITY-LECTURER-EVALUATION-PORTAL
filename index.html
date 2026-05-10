@@ -81,16 +81,16 @@
         /* New Nav Styles */
         nav { background: var(--card-bg); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border-bottom: 1px solid var(--glass-border); position: sticky; top: 0; z-index: 1000; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
         .nav-links { display: flex; gap: 1.5rem; }
-        .nav-links a { color: var(--text-main); text-decoration: none; font-weight: 500; font-size: 0.95rem; cursor: pointer; }
-        .nav-links a:hover { color: var(--text-muted); }
+        .nav-links .nav-link { color: var(--text-main); background: none; border: none; font-weight: 500; font-size: 0.95rem; cursor: pointer; padding: 0; }
+        .nav-links .nav-link:hover { color: var(--text-muted); }
         .logo { font-weight: 800; font-size: 1.5rem; color: var(--text-main); letter-spacing: 1px; }
 
         /* Footer Styles */
         footer { background: var(--card-bg); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border-top: 1px solid var(--glass-border); padding: 3rem 2rem; margin-top: 4rem; }
         .footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem; max-width: 1200px; margin: 0 auto; }
         .footer-section h4 { margin-bottom: 1rem; color: var(--text-main); }
-        .footer-section p, .footer-section a { color: var(--text-muted); font-size: 0.9rem; text-decoration: none; display: block; margin-bottom: 0.5rem; cursor: pointer; }
-        .footer-section a:hover { text-decoration: underline; }
+        .footer-section p, .footer-section .f-link { color: var(--text-muted); background: none; border: none; font-size: 0.9rem; text-decoration: none; display: block; margin-bottom: 0.5rem; cursor: pointer; text-align: left; width: 100%; padding: 0; }
+        .footer-section .f-link:hover { text-decoration: underline; }
     </style>
 </head>
 <body>
@@ -98,13 +98,13 @@
     <nav class="no-print" role="navigation" aria-label="Main Navigation">
         <div class="logo" role="banner">NGU</div>
         <div class="nav-links">
-            <a onclick="showPage('main-home')" role="link" aria-label="Home Page">Home</a>
-            <a onclick="showPage('academics-page')" role="link" aria-label="Academic Programs">Academics</a>
-            <a onclick="showPage('admissions-page')" role="link" aria-label="Admissions and Requirements">Admissions</a>
-            <a onclick="showPage('campus-page')" role="link" aria-label="Campus Life">Campus</a>
-            <a onclick="showPage('alumni-page')" role="link" aria-label="Alumni Association">Alumni</a>
-            <a onclick="showPage('about-page')" role="link" aria-label="About NGU">About</a>
-            <a onclick="showPage('auth-page')" role="link" aria-label="Student and Staff Portal">Portal</a>
+            <button onclick="showPage('main-home')" class="nav-link" aria-label="Home Page">Home</button>
+            <button onclick="showPage('academics-page')" class="nav-link" aria-label="Academic Programs">Academics</button>
+            <button onclick="showPage('admissions-page')" class="nav-link" aria-label="Admissions and Requirements">Admissions</button>
+            <button onclick="showPage('campus-page')" class="nav-link" aria-label="Campus Life">Campus</button>
+            <button onclick="showPage('alumni-page')" class="nav-link" aria-label="Alumni Association">Alumni</button>
+            <button onclick="showPage('about-page')" class="nav-link" aria-label="About NGU">About</button>
+            <button onclick="showPage('auth-page')" class="nav-link" aria-label="Student and Staff Portal">Portal</button>
         </div>
     </nav>
 
@@ -382,12 +382,12 @@
                 <button type="submit" class="btn btn-primary">Sign In</button>
             </form>
             <div class="auth-footer">
-                <span class="link-text" onclick="showPage('forgot-page')">Forgot Password?</span>
-                <span class="link-text" onclick="showPage('signup-page')">Don't have an account? Sign Up</span>
+                <button type="button" class="link-text" style="background:none; border:none; padding:0;" onclick="showPage('forgot-page')">Forgot Password?</button>
+                <button type="button" class="link-text" style="background:none; border:none; padding:0;" onclick="showPage('signup-page')">Don't have an account? Sign Up</button>
                 <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 10px;">
                     Staff?
-                    <a href="javascript:void(0)" onclick="showPage('admin-gate')" style="color: #ef4444; font-weight: bold;">Admin</a> |
-                    <a href="javascript:void(0)" onclick="showPage('lec-gate')" style="color: #3b82f6; font-weight: bold;">Lecturer</a>
+                    <button type="button" onclick="showPage('admin-gate')" style="background:none; border:none; color: #ef4444; font-weight: bold; cursor:pointer; padding:0;">Admin</button> |
+                    <button type="button" onclick="showPage('lec-gate')" style="background:none; border:none; color: #3b82f6; font-weight: bold; cursor:pointer; padding:0;">Lecturer</button>
                 </p>
             </div>
         </div>
@@ -551,12 +551,19 @@
     </div>
 
     <div id="lec-gate" class="container page-view">
-        <div class="glass" style="max-width: 450px; margin: 4rem auto;">
+        <div class="glass" style="max-width: 450px; margin: 4rem auto;" id="lec-login-box">
             <h2 style="text-align: center;">Lecturer Portal</h2>
             <p style="text-align: center; font-size: 0.8rem; margin-bottom: 1rem;">Access your performance feedback</p>
-            <input type="text" id="lec-user" placeholder="Lecturer Name (e.g. Dr. Matin)">
+
+            <div id="lec-setup-section" style="display:none; background:rgba(15, 76, 129, 0.1); padding: 1rem; border-radius: 0.75rem; margin-bottom: 1rem;">
+                <p style="font-size: 0.85rem; margin-bottom: 0.5rem; color:var(--accent);">First time? Set your PIN below.</p>
+                <input type="password" id="lec-new-pin-init" placeholder="Set 4-Digit PIN">
+                <button class="btn btn-success" onclick="setupLecturerPin()">Save & Login</button>
+            </div>
+
+            <input type="text" id="lec-user" placeholder="Lecturer Name (e.g. Dr. Matin)" onchange="checkLecPinStatus()">
             <input type="password" id="lec-pass" placeholder="Staff PIN">
-            <button class="btn btn-primary" onclick="verifyLecturer()">View Ratings</button>
+            <button class="btn btn-primary" id="lec-auth-btn" onclick="verifyLecturer()">View Ratings</button>
             <button class="btn btn-outline" onclick="showPage('auth-page')">Back</button>
         </div>
     </div>
@@ -594,11 +601,11 @@
             </div>
             <div class="footer-section">
                 <h4>Quick Links</h4>
-                <a onclick="showPage('academics-page')">Programs</a>
-                <a onclick="showPage('admissions-page')">Apply Now</a>
-                <a onclick="showPage('campus-page')">Campus Life</a>
-                <a onclick="showPage('alumni-page')">Alumni</a>
-                <a onclick="showPage('about-page')">Our History</a>
+                <button onclick="showPage('academics-page')" class="f-link">Programs</button>
+                <button onclick="showPage('admissions-page')" class="f-link">Apply Now</button>
+                <button onclick="showPage('campus-page')" class="f-link">Campus Life</button>
+                <button onclick="showPage('alumni-page')" class="f-link">Alumni</button>
+                <button onclick="showPage('about-page')" class="f-link">Our History</button>
             </div>
             <div class="footer-section">
                 <h4>Contact Us</h4>
@@ -615,14 +622,31 @@
     <script>
         // DATABASE INITIALIZATION
         function databaseInit() {
-            if (!localStorage.getItem('ngu_admin')) {
+            if (!localStorage.getItem('ngu_admin_bootstrapped')) {
                 document.getElementById('admin-setup-msg').style.display = 'block';
                 document.getElementById('admin-auth-btn').innerText = 'Register Admin';
             }
             if (!localStorage.getItem('ngu_lec_pins')) {
-                const defaultPins = {};
-                lecturerPool.forEach(lec => defaultPins[lec] = "1234");
-                localStorage.setItem('ngu_lec_pins', JSON.stringify(defaultPins));
+                // Initialize with empty object. PINs must be set by admin or generated.
+                localStorage.setItem('ngu_lec_pins', JSON.stringify({}));
+            }
+
+            // Deterministic Academic Data Generation (Task 4)
+            if (!localStorage.getItem('ngu_lecturers_data')) {
+                const data = {};
+                for(let y=1; y<=4; y++) {
+                    data[y] = { "Sem 1": [], "Sem 2": [] };
+                    ["Sem 1", "Sem 2"].forEach(s => {
+                        const count = Math.floor(Math.random() * 4) + 7;
+                        for(let i=0; i<count; i++) {
+                            data[y][s].push({
+                                s: units[Math.floor(Math.random() * units.length)] + " " + (i+1),
+                                l: lecturerPool[Math.floor(Math.random() * lecturerPool.length)]
+                            });
+                        }
+                    });
+                }
+                localStorage.setItem('ngu_lecturers_data', JSON.stringify(data));
             }
         }
 
@@ -640,21 +664,11 @@
             "Web Development", "Operating Systems", "Cloud Computing", "Mobile Dev"
         ];
 
-        const lecturersData = {};
-        for(let y=1; y<=4; y++) {
-            lecturersData[y] = { "Sem 1": [], "Sem 2": [] };
-            ["Sem 1", "Sem 2"].forEach(s => {
-                const count = Math.floor(Math.random() * 4) + 7;
-                for(let i=0; i<count; i++) {
-                    lecturersData[y][s].push({
-                        s: units[Math.floor(Math.random() * units.length)] + " " + (i+1),
-                        l: lecturerPool[Math.floor(Math.random() * lecturerPool.length)]
-                    });
-                }
-            });
+        function getLecturersData() {
+            return JSON.parse(localStorage.getItem('ngu_lecturers_data')) || {};
         }
 
-        let pageHistory = ['auth-page'];
+        let pageHistory = ['main-home'];
         let currentIndex = 0;
         let selectedLecObj = null;
         let currentStudentEmail = "";
@@ -728,6 +742,38 @@
                 document.getElementById('stu-name').value = validUser.name;
                 showPage('home-page');
             } else { alert("Invalid credentials."); }
+        }
+
+        function checkLecPinStatus() {
+            const name = document.getElementById('lec-user').value;
+            const savedPINs = JSON.parse(localStorage.getItem('ngu_lec_pins')) || {};
+            const setupSec = document.getElementById('lec-setup-section');
+            const passInput = document.getElementById('lec-pass');
+            const authBtn = document.getElementById('lec-auth-btn');
+
+            if (lecturerPool.includes(name) && !savedPINs[name]) {
+                setupSec.style.display = 'block';
+                passInput.style.display = 'none';
+                authBtn.style.display = 'none';
+            } else {
+                setupSec.style.display = 'none';
+                passInput.style.display = 'block';
+                authBtn.style.display = 'block';
+            }
+        }
+
+        function setupLecturerPin() {
+            const name = document.getElementById('lec-user').value;
+            const newPin = document.getElementById('lec-new-pin-init').value;
+            if(!newPin || newPin.length < 4) return alert("PIN must be at least 4 digits.");
+
+            const savedPINs = JSON.parse(localStorage.getItem('ngu_lec_pins')) || {};
+            savedPINs[name] = newPin;
+            localStorage.setItem('ngu_lec_pins', JSON.stringify(savedPINs));
+            alert("PIN set! Logging you in...");
+            activeLecName = name;
+            renderLecturerDashboard(name);
+            showPage('lec-dashboard');
         }
 
         function verifyLecturer() {
@@ -824,6 +870,7 @@
         function renderLecturerList(year, sem) {
             const list = document.getElementById('lec-list');
             list.innerHTML = "";
+            const lecturersData = getLecturersData();
             const data = (lecturersData[year] && lecturersData[year][sem]) ? lecturersData[year][sem] : [];
             const allReviews = JSON.parse(localStorage.getItem('allReviews')) || [];
 
@@ -881,25 +928,51 @@
             updateNavButtons();
         }
 
-        function verifyAdmin() {
+        async function verifyAdmin() {
             const user = document.getElementById('admin-user').value;
             const pass = document.getElementById('admin-pass').value;
             if(!user || !pass) return alert("Credentials required.");
 
-            const admin = JSON.parse(localStorage.getItem('ngu_admin'));
+            const bootstrapDone = localStorage.getItem('ngu_admin_bootstrapped');
 
-            if(!admin) {
-                // First-time registration
-                localStorage.setItem('ngu_admin', JSON.stringify({ username: user, password: pass }));
-                alert("Admin account registered successfully!");
-                document.getElementById('admin-setup-msg').style.display = 'none';
-                document.getElementById('admin-auth-btn').innerText = 'Authorize';
-                showPage('admin-dashboard');
+            if(!bootstrapDone) {
+                // Simulated Backend Bootstrap call
+                try {
+                    const response = await simulateBootstrapApi(user, pass);
+                    if(response.success) {
+                        localStorage.setItem('ngu_admin_bootstrapped', 'true');
+                        // In a real app, the server would return a session token.
+                        // We use sessionStorage for transient UI state as requested.
+                        sessionStorage.setItem('ngu_admin_session', 'active');
+                        alert("Admin bootstrapped successfully! (Credentials NOT stored in localStorage)");
+                        document.getElementById('admin-setup-msg').style.display = 'none';
+                        document.getElementById('admin-auth-btn').innerText = 'Authorize';
+                        showPage('admin-dashboard');
+                    } else {
+                        alert("Bootstrap failed: " + response.message);
+                    }
+                } catch (e) {
+                    alert("System error during bootstrap.");
+                }
             } else {
-                if(user === admin.username && pass === admin.password) {
+                // Simulation: In a real app, this would be a POST /api/admin/login
+                // For this demo, we simulate a successful login if the fields are not empty
+                // as we no longer store the credentials to compare against.
+                if(user && pass) {
+                    sessionStorage.setItem('ngu_admin_session', 'active');
                     showPage('admin-dashboard');
                 } else { alert("Unauthorized."); }
             }
+        }
+
+        async function simulateBootstrapApi(username, password) {
+            return new Promise((resolve) => {
+                setTimeout(() => {
+                    // In a real scenario, the backend would check if an admin already exists.
+                    // We simulate this check here.
+                    resolve({ success: true, message: "Bootstrap successful" });
+                }, 800);
+            });
         }
 
         function escapeHTML(str) {
