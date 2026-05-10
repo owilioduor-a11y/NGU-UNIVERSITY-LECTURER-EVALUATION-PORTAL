@@ -3,18 +3,22 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>NGU Student Performance Portal</title>
+    <meta name="description" content="Nexus Global University (NGU) - A leading institution for innovation, research, and academic excellence in Nairobi, Kenya. Offering Certificate to Masters programs." />
+    <meta name="keywords" content="Nexus Global University, NGU, University Kenya, Computing, Engineering, Business, Media, Higher Education Nairobi" />
+    <meta name="author" content="Nexus Global University" />
+    <title>Nexus Global University | Empowering Future Leaders</title>
     <style>
         :root {
-            --primary: #003366; 
+            --primary: #0f4c81;
+            --accent: #d4af37;
             --danger: #b91c1c;
             --success: #15803d;
-            --bg-overlay: rgba(0, 0, 0, 0.55);
-            --card-bg: rgba(255, 255, 255, 0.12);
-            --glass-border: rgba(255, 255, 255, 0.2);
-            --text-main: #ffffff;
-            --text-muted: #cbd5e1;
-            --input-bg: rgba(0, 0, 0, 0.2);
+            --bg-overlay: rgba(10, 25, 47, 0.7);
+            --card-bg: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.15);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --input-bg: rgba(0, 0, 0, 0.3);
         }
 
         body.light-mode {
@@ -26,6 +30,7 @@
             --input-bg: rgba(255, 255, 255, 0.9);
         }
 
+        html { scroll-behavior: smooth; }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, sans-serif; transition: 0.3s ease; }
         body { background-image: url('https://images.unsplash.com/photo-1504384308090-c894fdcc538d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80'); background-size: cover; background-position: center; background-attachment: fixed; color: var(--text-main); min-height: 100vh; overflow-x: hidden; }
         body::before { content: ""; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: var(--bg-overlay); z-index: -1; }
@@ -49,9 +54,9 @@
         .btn-success { background: var(--success); color: white; }
         .btn-danger { background: var(--danger); color: white; }
         .btn-outline { background: transparent; border: 1px solid var(--glass-border); color: var(--text-main); }
-        
+
         input, select, textarea { width: 100%; padding: 0.9rem; border-radius: 0.75rem; border: 1px solid var(--glass-border); background: var(--input-bg); color: var(--text-main); margin-bottom: 0.8rem; }
-        .theme-toggle { position: fixed; top: 15px; right: 15px; z-index: 1000; background: var(--primary); color: white; border-radius: 50%; width: 45px; height: 45px; cursor: pointer; border: none; }
+        .theme-toggle { position: fixed; bottom: 80px; right: 20px; z-index: 1000; background: var(--primary); color: white; border-radius: 50%; width: 45px; height: 45px; cursor: pointer; border: none; }
 
         .link-text { color: var(--text-muted); font-size: 0.85rem; cursor: pointer; text-decoration: underline; }
         .auth-footer { margin-top: 1rem; text-align: center; display: flex; flex-direction: column; gap: 8px; }
@@ -63,10 +68,45 @@
 
         .date-notice { font-size: 0.85rem; padding: 10px; border-radius: 8px; margin-bottom: 15px; text-align: center; background: rgba(239, 68, 68, 0.2); border: 1px solid #ef4444; }
 
+        @media (max-width: 768px) {
+            nav { padding: 1rem; flex-direction: column; gap: 1rem; }
+            .nav-links { gap: 0.8rem; flex-wrap: wrap; justify-content: center; }
+            .logo { font-size: 1.2rem; }
+            h1 { font-size: 2rem !important; }
+            .footer-grid { grid-template-columns: 1fr; }
+        }
+
         @media print { .no-print { display: none !important; } body::before { display: none; } .glass { background: white !important; color: black !important; backdrop-filter: none; border: 1px solid #ccc; } td, th { color: black !important; border-bottom: 1px solid #eee; } }
+
+        /* New Nav Styles */
+        nav { background: var(--card-bg); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border-bottom: 1px solid var(--glass-border); position: sticky; top: 0; z-index: 1000; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
+        .nav-links { display: flex; gap: 1.5rem; }
+        .nav-links a { color: var(--text-main); text-decoration: none; font-weight: 500; font-size: 0.95rem; cursor: pointer; }
+        .nav-links a:hover { color: var(--text-muted); }
+        .logo { font-weight: 800; font-size: 1.5rem; color: var(--text-main); letter-spacing: 1px; }
+
+        /* Footer Styles */
+        footer { background: var(--card-bg); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border-top: 1px solid var(--glass-border); padding: 3rem 2rem; margin-top: 4rem; }
+        .footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem; max-width: 1200px; margin: 0 auto; }
+        .footer-section h4 { margin-bottom: 1rem; color: var(--text-main); }
+        .footer-section p, .footer-section a { color: var(--text-muted); font-size: 0.9rem; text-decoration: none; display: block; margin-bottom: 0.5rem; cursor: pointer; }
+        .footer-section a:hover { text-decoration: underline; }
     </style>
 </head>
 <body>
+
+    <nav class="no-print" role="navigation" aria-label="Main Navigation">
+        <div class="logo" role="banner">NGU</div>
+        <div class="nav-links">
+            <a onclick="showPage('main-home')" role="link" aria-label="Home Page">Home</a>
+            <a onclick="showPage('academics-page')" role="link" aria-label="Academic Programs">Academics</a>
+            <a onclick="showPage('admissions-page')" role="link" aria-label="Admissions and Requirements">Admissions</a>
+            <a onclick="showPage('campus-page')" role="link" aria-label="Campus Life">Campus</a>
+            <a onclick="showPage('alumni-page')" role="link" aria-label="Alumni Association">Alumni</a>
+            <a onclick="showPage('about-page')" role="link" aria-label="About NGU">About</a>
+            <a onclick="showPage('auth-page')" role="link" aria-label="Student and Staff Portal">Portal</a>
+        </div>
+    </nav>
 
     <button class="theme-toggle" onclick="toggleTheme()" id="theme-btn">🌙</button>
 
@@ -75,7 +115,262 @@
         <button class="nav-btn" onclick="navForward()" id="nextBtn" title="Next Page">→</button>
     </div>
 
-    <div id="auth-page" class="container page-view active">
+    <div id="main-home" class="container page-view active">
+        <div class="glass" style="text-align: center; padding: 4rem 2rem;">
+            <h1 style="font-size: 3.5rem; margin-bottom: 1rem;">Welcome to Nexus Global University</h1>
+            <p style="font-size: 1.2rem; color: var(--text-muted); max-width: 800px; margin: 0 auto 2rem;">
+                Empowering the next generation of leaders through innovation, research, and academic excellence.
+                Join a community of scholars dedicated to solving global challenges.
+            </p>
+            <div style="display: flex; gap: 1rem; justify-content: center;">
+                <button class="btn btn-primary" style="width: auto; padding: 1rem 2rem;" onclick="showPage('admissions-page')">Apply Now</button>
+                <button class="btn btn-outline" style="width: auto; padding: 1rem 2rem;" onclick="showPage('academics-page')">Explore Programs</button>
+            </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; margin-top: 3rem;">
+            <div class="glass" style="text-align: center;">
+                <h2 style="color: var(--success);">5,000+</h2>
+                <p>Students</p>
+            </div>
+            <div class="glass" style="text-align: center;">
+                <h2 style="color: var(--success);">200+</h2>
+                <p>Expert Faculty</p>
+            </div>
+            <div class="glass" style="text-align: center;">
+                <h2 style="color: var(--success);">15+</h2>
+                <p>Research Centers</p>
+            </div>
+            <div class="glass" style="text-align: center;">
+                <h2 style="color: var(--success);">98%</h2>
+                <p>Employment Rate</p>
+            </div>
+        </div>
+
+        <div class="glass" style="margin-top: 3rem;">
+            <h3 style="text-align: center; margin-bottom: 2rem;">Information For...</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem;">
+                <div class="glass" style="padding: 1.5rem; text-align: center; background: rgba(15, 76, 129, 0.1);">
+                    <h4>Prospective Students</h4>
+                    <p style="font-size: 0.85rem; margin: 0.5rem 0;">Find your program and start your journey.</p>
+                    <button class="btn btn-primary" onclick="showPage('admissions-page')" style="padding: 0.5rem;">Admissions</button>
+                </div>
+                <div class="glass" style="padding: 1.5rem; text-align: center; background: rgba(15, 76, 129, 0.1);">
+                    <h4>Current Students</h4>
+                    <p style="font-size: 0.85rem; margin: 0.5rem 0;">Access your grades, portal, and resources.</p>
+                    <button class="btn btn-primary" onclick="showPage('auth-page')" style="padding: 0.5rem;">Student Portal</button>
+                </div>
+                <div class="glass" style="padding: 1.5rem; text-align: center; background: rgba(15, 76, 129, 0.1);">
+                    <h4>Faculty & Staff</h4>
+                    <p style="font-size: 0.85rem; margin: 0.5rem 0;">Administrative tools and performance feedback.</p>
+                    <button class="btn btn-primary" onclick="showPage('auth-page')" style="padding: 0.5rem;">Staff Login</button>
+                </div>
+                <div class="glass" style="padding: 1.5rem; text-align: center; background: rgba(15, 76, 129, 0.1);">
+                    <h4>Alumni</h4>
+                    <p style="font-size: 0.85rem; margin: 0.5rem 0;">Stay connected and give back to NGU.</p>
+                    <button class="btn btn-primary" onclick="showPage('alumni-page')" style="padding: 0.5rem;">Alumni Hub</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="glass" style="margin-top: 3rem;">
+            <h3>Latest News & Events</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin-top: 1.5rem;">
+                <div style="background: rgba(255,255,255,0.05); padding: 1.5rem; border-radius: 1rem;">
+                    <span style="color: var(--success); font-weight: bold;">Oct 24, 2024</span>
+                    <h4 style="margin: 0.5rem 0;">Annual Innovation Summit</h4>
+                    <p style="font-size: 0.9rem; color: var(--text-muted);">Join us for a week of groundbreaking research and tech showcases.</p>
+                </div>
+                <div style="background: rgba(255,255,255,0.05); padding: 1.5rem; border-radius: 1rem;">
+                    <span style="color: var(--success); font-weight: bold;">Oct 15, 2024</span>
+                    <h4 style="margin: 0.5rem 0;">New AI Lab Opening</h4>
+                    <p style="font-size: 0.9rem; color: var(--text-muted);">NGU expands its tech infrastructure with a state-of-the-art AI lab.</p>
+                </div>
+                <div style="background: rgba(255,255,255,0.05); padding: 1.5rem; border-radius: 1rem;">
+                    <span style="color: var(--success); font-weight: bold;">Sep 30, 2024</span>
+                    <h4 style="margin: 0.5rem 0;">International Exchange Program</h4>
+                    <p style="font-size: 0.9rem; color: var(--text-muted);">Applications are now open for our European exchange programs.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="academics-page" class="container page-view">
+        <header class="glass" style="text-align: center; margin-bottom: 2rem;">
+            <h1>Academic Programs</h1>
+            <p>Diverse programs tailored for your professional growth</p>
+        </header>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 2rem;">
+            <div class="glass">
+                <h3>Computing & IT</h3>
+                <ul style="margin-top: 1rem; list-style: none;">
+                    <li><strong>Postgraduate:</strong> MSc. Cyber Security, MSc. Data Science</li>
+                    <li><strong>Degree:</strong> BSc. Computer Science, BSc. Software Engineering</li>
+                    <li><strong>Diploma:</strong> Diploma in IT, Diploma in Software Dev</li>
+                    <li><strong>Certificate:</strong> Certificate in Computer Repair</li>
+                </ul>
+            </div>
+            <div class="glass">
+                <h3>Engineering & Tech</h3>
+                <ul style="margin-top: 1rem; list-style: none;">
+                    <li><strong>Postgraduate:</strong> MSc. Renewable Energy</li>
+                    <li><strong>Degree:</strong> BSc. Electrical Engineering, BSc. Mechanical Engineering</li>
+                    <li><strong>Diploma:</strong> Diploma in Electrical Eng, Diploma in Automotive</li>
+                    <li><strong>Certificate:</strong> Certificate in Plumbing</li>
+                </ul>
+            </div>
+            <div class="glass">
+                <h3>Business & Economics</h3>
+                <ul style="margin-top: 1rem; list-style: none;">
+                    <li><strong>Postgraduate:</strong> MBA, MSc. Finance</li>
+                    <li><strong>Degree:</strong> Bachelor of Commerce, BSc. Economics</li>
+                    <li><strong>Diploma:</strong> Diploma in Business Mgt, Diploma in Accounting</li>
+                    <li><strong>Certificate:</strong> Certificate in Sales & Marketing</li>
+                </ul>
+            </div>
+            <div class="glass">
+                <h3>Media & Communication</h3>
+                <ul style="margin-top: 1rem; list-style: none;">
+                    <li><strong>Degree:</strong> BA. Journalism, BA. Public Relations</li>
+                    <li><strong>Diploma:</strong> Diploma in Mass Comm, Diploma in Animation</li>
+                    <li><strong>Certificate:</strong> Certificate in Photography</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div id="admissions-page" class="container page-view">
+        <div class="glass" style="margin-bottom: 2rem;">
+            <h2 style="text-align: center; margin-bottom: 1.5rem;">Admission Requirements</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem;">
+                <div>
+                    <h4 style="color: var(--success);">Postgraduate</h4>
+                    <p style="font-size: 0.9rem; margin-top: 0.5rem;">Relevant Bachelor's Degree with Second Class Honors (Upper Division) or equivalent.</p>
+                </div>
+                <div>
+                    <h4 style="color: var(--success);">Undergraduate (Degree)</h4>
+                    <p style="font-size: 0.9rem; margin-top: 0.5rem;">Minimum KCSE Mean Grade of C+ (plus) or equivalent qualification.</p>
+                </div>
+                <div>
+                    <h4 style="color: var(--success);">Diploma</h4>
+                    <p style="font-size: 0.9rem; margin-top: 0.5rem;">Minimum KCSE Mean Grade of C- (minus) or equivalent qualification.</p>
+                </div>
+                <div>
+                    <h4 style="color: var(--success);">Certificate</h4>
+                    <p style="font-size: 0.9rem; margin-top: 0.5rem;">Minimum KCSE Mean Grade of D+ (plus) or equivalent qualification.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="glass" id="apply-section">
+            <h3>Online Application</h3>
+            <div id="application-steps" style="margin-top: 1.5rem;">
+                <div class="app-step" id="step-1">
+                    <h4>Step 1: Personal Details</h4>
+                    <input type="text" id="app-fname" placeholder="First Name">
+                    <input type="text" id="app-lname" placeholder="Last Name">
+                    <input type="email" id="app-email" placeholder="Email Address">
+                    <button class="btn btn-primary" onclick="nextAppStep(2)">Next: Academic Info</button>
+                </div>
+                <div class="app-step" id="step-2" style="display:none;">
+                    <h4>Step 2: Academic Background</h4>
+                    <input type="text" id="app-school" placeholder="Last School Attended">
+                    <input type="text" id="app-grade" placeholder="Mean Grade (e.g., B+)">
+                    <button class="btn btn-primary" onclick="nextAppStep(3)">Next: Program Selection</button>
+                    <button class="btn btn-outline" onclick="nextAppStep(1)">Back</button>
+                </div>
+                <div class="app-step" id="step-3" style="display:none;">
+                    <h4>Step 3: Choose Program</h4>
+                    <select id="app-program">
+                        <option>BSc. Computer Science</option>
+                        <option>BSc. Software Engineering</option>
+                        <option>Bachelor of Commerce</option>
+                        <option>MSc. Data Science</option>
+                    </select>
+                    <button class="btn btn-success" onclick="submitApplication()">Submit Application</button>
+                    <button class="btn btn-outline" onclick="nextAppStep(2)">Back</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="campus-page" class="container page-view">
+        <header class="glass" style="text-align: center; margin-bottom: 2rem;">
+            <h1>Campus Life</h1>
+            <p>Experience the vibrant culture and community at NGU</p>
+        </header>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+            <div class="glass">
+                <h3>Student Clubs</h3>
+                <p style="margin-top: 1rem; color: var(--text-muted);">From Tech Innovators to Drama Club, find your tribe among our 30+ student organizations.</p>
+            </div>
+            <div class="glass">
+                <h3>Sports & Athletics</h3>
+                <p style="margin-top: 1rem; color: var(--text-muted);">Join our winning teams in Football, Basketball, Rugby, and Athletics. Go NGU Lions!</p>
+            </div>
+            <div class="glass">
+                <h3>Housing & Dining</h3>
+                <p style="margin-top: 1rem; color: var(--text-muted);">Comfortable on-campus hostels and a variety of dining options to keep you energized.</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="alumni-page" class="container page-view">
+        <header class="glass" style="text-align: center; margin-bottom: 2rem;">
+            <h1>Alumni Network</h1>
+            <p>Connecting thousands of graduates worldwide</p>
+        </header>
+
+        <div class="glass">
+            <h3>Stay Connected</h3>
+            <p style="margin-top: 1rem; color: var(--text-muted);">
+                The NGU Alumni Association helps you stay in touch with former classmates and the university.
+                Enjoy benefits like career mentorship, networking events, and lifelong library access.
+            </p>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 2rem;">
+                <button class="btn btn-primary">Join Alumni Association</button>
+                <button class="btn btn-outline">Upcoming Events</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="about-page" class="container page-view">
+        <header class="glass" style="text-align: center; margin-bottom: 2rem;">
+            <h1>About Nexus Global University</h1>
+            <p>Our journey, mission, and vision for the future</p>
+        </header>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+            <div class="glass">
+                <h3>Our Mission</h3>
+                <p style="margin-top: 1rem; color: var(--text-muted);">
+                    To provide world-class education that fosters innovation, critical thinking, and social responsibility,
+                    preparing students to thrive in a rapidly evolving global landscape.
+                </p>
+            </div>
+            <div class="glass">
+                <h3>Our Vision</h3>
+                <p style="margin-top: 1rem; color: var(--text-muted);">
+                    To be a leading global institution recognized for excellence in research,
+                    technology-driven learning, and community impact.
+                </p>
+            </div>
+        </div>
+
+        <div class="glass" style="margin-top: 2rem;">
+            <h3>Our History</h3>
+            <p style="margin-top: 1rem; color: var(--text-muted);">
+                Founded in 2010, Nexus Global University (NGU) began as a small institute of technology in Nairobi.
+                Over the past decade, we have expanded into a comprehensive university with five faculties and
+                over 5,000 students from 20 different countries. Our commitment to quality assurance and student
+                satisfaction remains at the core of everything we do.
+            </p>
+        </div>
+    </div>
+
+    <div id="auth-page" class="container page-view">
         <div class="glass" style="max-width: 450px; margin: 4rem auto;">
             <div style="text-align: center; margin-bottom: 1rem;">
                 <h2 style="color: #fff; text-transform: uppercase; letter-spacing: 1px;">NGU Portal</h2>
@@ -90,8 +385,8 @@
                 <span class="link-text" onclick="showPage('forgot-page')">Forgot Password?</span>
                 <span class="link-text" onclick="showPage('signup-page')">Don't have an account? Sign Up</span>
                 <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 10px;">
-                    Staff? 
-                    <a href="javascript:void(0)" onclick="showPage('admin-gate')" style="color: #ef4444; font-weight: bold;">Admin</a> | 
+                    Staff?
+                    <a href="javascript:void(0)" onclick="showPage('admin-gate')" style="color: #ef4444; font-weight: bold;">Admin</a> |
                     <a href="javascript:void(0)" onclick="showPage('lec-gate')" style="color: #3b82f6; font-weight: bold;">Lecturer</a>
                 </p>
             </div>
@@ -123,16 +418,16 @@
 
     <div id="home-page" class="container page-view">
         <header class="glass" style="text-align: center; margin-bottom: 1.5rem;">
-            <h1>NGU Lecturer Evaluation</h1>
+            <h1>Student Portal</h1>
             <p>Quality Assurance & Performance Portal</p>
         </header>
         <div class="glass" style="max-width: 600px; margin: 0 auto;">
             <div id="date-warning" class="date-notice" style="display:none;"></div>
-            
+
             <h3>Academic Session Details</h3>
             <label>Full Name</label>
             <input type="text" id="stu-name" placeholder="Enter your full name" readonly>
-            
+
             <label>🪪 Admission Number</label>
             <input type="text" id="stu-adm" placeholder="e.g. NGU-CIT-2024-001">
 
@@ -163,10 +458,10 @@
 
             <label>Academic Year</label>
             <select id="stu-year" onchange="updateSemesterList()"><option value="1">Year 1</option><option value="2">Year 2</option><option value="3">Year 3</option><option value="4">Year 4</option></select>
-            
+
             <label>Semester</label>
             <select id="stu-sem"></select>
-            
+
             <button class="btn btn-primary" id="access-btn" onclick="goToReview()">Access Evaluation Units</button>
         </div>
     </div>
@@ -181,7 +476,7 @@
                 </div>
                 <button class="btn btn-danger" style="width: auto; padding: 0.5rem 1rem;" onclick="logout()">Exit Portal</button>
             </div>
-            
+
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
                 <div id="lec-list-container">
                     <p style="font-size: 0.9rem; margin-bottom: 5px;">Select an active unit to rate:</p>
@@ -203,11 +498,12 @@
     </div>
 
     <div id="admin-gate" class="container page-view">
-        <div class="glass" style="max-width: 450px; margin: 4rem auto;">
+        <div class="glass" style="max-width: 450px; margin: 4rem auto;" id="admin-login-box">
             <h2 style="text-align: center;">NGU Admin Gate</h2>
+            <div id="admin-setup-msg" style="display:none; color: var(--accent); margin-bottom: 1rem; text-align: center; font-size: 0.9rem;">No administrator found. Please register the first account.</div>
             <input type="text" id="admin-user" placeholder="Staff Username">
             <input type="password" id="admin-pass" placeholder="Staff Password">
-            <button class="btn btn-primary" onclick="verifyAdmin()">Authorize</button>
+            <button class="btn btn-primary" onclick="verifyAdmin()" id="admin-auth-btn">Authorize</button>
             <button class="btn btn-outline" onclick="showPage('auth-page')">Return to Student Portal</button>
         </div>
     </div>
@@ -290,7 +586,46 @@
         </div>
     </div>
 
+    <footer class="no-print" role="contentinfo">
+        <div class="footer-grid">
+            <div class="footer-section">
+                <h4>About NGU</h4>
+                <p>Nexus Global University is dedicated to academic excellence and innovation in the digital age.</p>
+            </div>
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <a onclick="showPage('academics-page')">Programs</a>
+                <a onclick="showPage('admissions-page')">Apply Now</a>
+                <a onclick="showPage('campus-page')">Campus Life</a>
+                <a onclick="showPage('alumni-page')">Alumni</a>
+                <a onclick="showPage('about-page')">Our History</a>
+            </div>
+            <div class="footer-section">
+                <h4>Contact Us</h4>
+                <p>Email: info@ngu.edu</p>
+                <p>Phone: +254 700 000000</p>
+                <p>Address: Nairobi, Kenya</p>
+            </div>
+        </div>
+        <div style="text-align: center; margin-top: 2rem; color: var(--text-muted); font-size: 0.8rem;">
+            &copy; 2024 Nexus Global University. All rights reserved.
+        </div>
+    </footer>
+
     <script>
+        // DATABASE INITIALIZATION
+        function databaseInit() {
+            if (!localStorage.getItem('ngu_admin')) {
+                document.getElementById('admin-setup-msg').style.display = 'block';
+                document.getElementById('admin-auth-btn').innerText = 'Register Admin';
+            }
+            if (!localStorage.getItem('ngu_lec_pins')) {
+                const defaultPins = {};
+                lecturerPool.forEach(lec => defaultPins[lec] = "1234");
+                localStorage.setItem('ngu_lec_pins', JSON.stringify(defaultPins));
+            }
+        }
+
         // CONFIGURATION & DYNAMIC DATA
         let EVALUATION_PERIOD = JSON.parse(localStorage.getItem('ngu_dates')) || {
             start: "2024-01-01",
@@ -298,10 +633,10 @@
         };
 
         const lecturerPool = ["Dr. Matin", "Prof. Kwesi", "Dr. Owili", "Prof. Njeri", "Dr. Rodriguez", "Dr. Sang", "Prof. Okello", "Dr. Amina", "Dr. Mutua", "Prof. Zhao"];
-        
+
         const units = [
-            "Intro to Computing", "Discrete Math", "Software Design", "Data Structures", 
-            "Network Security", "AI Principles", "Ethics in Tech", "Database Management", 
+            "Intro to Computing", "Discrete Math", "Software Design", "Data Structures",
+            "Network Security", "AI Principles", "Ethics in Tech", "Database Management",
             "Web Development", "Operating Systems", "Cloud Computing", "Mobile Dev"
         ];
 
@@ -326,6 +661,7 @@
         let activeLecName = "";
 
         window.onload = () => {
+            databaseInit();
             document.getElementById('admin-start-date').value = EVALUATION_PERIOD.start;
             document.getElementById('admin-end-date').value = EVALUATION_PERIOD.end;
             checkEvaluationDate();
@@ -347,7 +683,7 @@
             const end = new Date(EVALUATION_PERIOD.end);
             const btn = document.getElementById('access-btn');
             const warning = document.getElementById('date-warning');
-            
+
             if (now < start || now > end) {
                 if(btn) btn.disabled = true;
                 if(warning) {
@@ -381,8 +717,8 @@
             }
         }
 
-        function handleAuth(e) { 
-            e.preventDefault(); 
+        function handleAuth(e) {
+            e.preventDefault();
             const email = document.getElementById('login-email').value;
             const pass = document.getElementById('login-pass').value;
             const users = getUsers();
@@ -398,9 +734,9 @@
             const name = document.getElementById('lec-user').value;
             const pass = document.getElementById('lec-pass').value;
             const savedPINs = JSON.parse(localStorage.getItem('ngu_lec_pins')) || {};
-            const correctPIN = savedPINs[name] || "1234"; 
+            const correctPIN = savedPINs[name];
 
-            if(lecturerPool.includes(name) && pass === correctPIN) {
+            if(lecturerPool.includes(name) && correctPIN && pass === correctPIN) {
                 activeLecName = name;
                 renderLecturerDashboard(name);
                 showPage('lec-dashboard');
@@ -426,20 +762,20 @@
             document.getElementById('lec-welcome').innerText = `Welcome, ${lecName}`;
             const reviews = JSON.parse(localStorage.getItem('allReviews')) || [];
             const myReviews = reviews.filter(r => r.lec.includes(lecName));
-            
+
             const avg = myReviews.length ? (myReviews.reduce((a, b) => a + parseInt(b.score), 0) / myReviews.length).toFixed(1) : 0;
-            
+
             document.getElementById('lec-stats-container').innerHTML = `
                 <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
                     <div class="glass" style="text-align:center"><h3>Overall Rating</h3><h1 style="color:#22c55e">${avg}%</h1></div>
                     <div class="glass" style="text-align:center"><h3>Total Evaluations</h3><h1>${myReviews.length}</h1></div>
                 </div>
             `;
-            
+
             document.getElementById('lec-comments-container').innerHTML = myReviews.map(r => `
                 <div style="background:rgba(255,255,255,0.05); padding:15px; border-radius:10px; margin-bottom:10px;">
-                    <p>"${r.comment}"</p>
-                    <small style="color:var(--text-muted)">Score given: ${r.score}% | Date: ${r.date}</small>
+                    <p>"${escapeHTML(r.comment)}"</p>
+                    <small style="color:var(--text-muted)">Score given: ${escapeHTML(r.score)}% | Date: ${escapeHTML(r.date)}</small>
                 </div>
             `).join('') || "<p>No feedback yet.</p>";
         }
@@ -490,7 +826,7 @@
             list.innerHTML = "";
             const data = (lecturersData[year] && lecturersData[year][sem]) ? lecturersData[year][sem] : [];
             const allReviews = JSON.parse(localStorage.getItem('allReviews')) || [];
-            
+
             let countCompleted = 0;
             data.forEach((item) => {
                 const hasVoted = allReviews.some(r => r.email === currentStudentEmail && r.lec === `${item.s} - ${item.l}` && r.yearSem === `Y${year} ${sem}`);
@@ -546,9 +882,30 @@
         }
 
         function verifyAdmin() {
-            if(document.getElementById('admin-user').value === "Peter Owili" && document.getElementById('admin-pass').value === "OWILI9526") {
+            const user = document.getElementById('admin-user').value;
+            const pass = document.getElementById('admin-pass').value;
+            if(!user || !pass) return alert("Credentials required.");
+
+            const admin = JSON.parse(localStorage.getItem('ngu_admin'));
+
+            if(!admin) {
+                // First-time registration
+                localStorage.setItem('ngu_admin', JSON.stringify({ username: user, password: pass }));
+                alert("Admin account registered successfully!");
+                document.getElementById('admin-setup-msg').style.display = 'none';
+                document.getElementById('admin-auth-btn').innerText = 'Authorize';
                 showPage('admin-dashboard');
-            } else { alert("Unauthorized."); }
+            } else {
+                if(user === admin.username && pass === admin.password) {
+                    showPage('admin-dashboard');
+                } else { alert("Unauthorized."); }
+            }
+        }
+
+        function escapeHTML(str) {
+            const p = document.createElement('p');
+            p.textContent = str;
+            return p.innerHTML;
         }
 
         function loadDashboard() {
@@ -557,18 +914,18 @@
             const reviews = JSON.parse(localStorage.getItem('allReviews')) || [];
             const filterDept = document.getElementById('admin-filter-dept').value;
 
-            const filteredReviews = filterDept === "All" 
-                ? reviews 
+            const filteredReviews = filterDept === "All"
+                ? reviews
                 : reviews.filter(r => r.dept === filterDept);
 
             tbody.innerHTML = filteredReviews.map(r => `
                 <tr>
-                    <td><small>${r.date}</small></td>
-                    <td>${r.name}</td>
-                    <td><span style="font-size:0.7rem; color:var(--text-muted)">${r.dept}</span><br>${r.course}</td>
-                    <td>${r.yearSem}</td>
-                    <td>${r.lec}</td>
-                    <td><strong>${r.score}%</strong></td>
+                    <td><small>${escapeHTML(r.date)}</small></td>
+                    <td>${escapeHTML(r.name)}</td>
+                    <td><span style="font-size:0.7rem; color:var(--text-muted)">${escapeHTML(r.dept)}</span><br>${escapeHTML(r.course)}</td>
+                    <td>${escapeHTML(r.yearSem)}</td>
+                    <td>${escapeHTML(r.lec)}</td>
+                    <td><strong>${escapeHTML(r.score)}%</strong></td>
                 </tr>`).reverse().join('');
         }
 
@@ -579,6 +936,19 @@
             document.getElementById('theme-btn').innerText = document.body.classList.contains('light-mode') ? '☀️' : '🌙';
         }
         function handleForgot() { alert("Simulated: Reset link sent to your email."); }
+
+        function nextAppStep(step) {
+            document.querySelectorAll('.app-step').forEach(s => s.style.display = 'none');
+            document.getElementById(`step-${step}`).style.display = 'block';
+        }
+
+        function submitApplication() {
+            const name = document.getElementById('app-fname').value;
+            if(!name) return alert("Please fill in your details.");
+            alert(`Thank you, ${name}! Your application has been received. We will contact you via email.`);
+            nextAppStep(1);
+            document.getElementById('apply-section').innerHTML = "<h3>Application Submitted!</h3><p>Your reference number is NGU-APP-" + Math.floor(Math.random()*10000) + "</p>";
+        }
     </script>
 </body>
 </html>
