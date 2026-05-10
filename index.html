@@ -81,16 +81,18 @@
         /* New Nav Styles */
         nav { background: var(--card-bg); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border-bottom: 1px solid var(--glass-border); position: sticky; top: 0; z-index: 1000; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
         .nav-links { display: flex; gap: 1.5rem; }
-        .nav-links a { color: var(--text-main); text-decoration: none; font-weight: 500; font-size: 0.95rem; cursor: pointer; }
-        .nav-links a:hover { color: var(--text-muted); }
+        .nav-links button { color: var(--text-main); background: transparent; border: none; font-weight: 500; font-size: 0.95rem; cursor: pointer; padding: 0; }
+        .nav-links button:hover { color: var(--text-muted); }
         .logo { font-weight: 800; font-size: 1.5rem; color: var(--text-main); letter-spacing: 1px; }
 
         /* Footer Styles */
         footer { background: var(--card-bg); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border-top: 1px solid var(--glass-border); padding: 3rem 2rem; margin-top: 4rem; }
         .footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem; max-width: 1200px; margin: 0 auto; }
         .footer-section h4 { margin-bottom: 1rem; color: var(--text-main); }
-        .footer-section p, .footer-section a { color: var(--text-muted); font-size: 0.9rem; text-decoration: none; display: block; margin-bottom: 0.5rem; cursor: pointer; }
+        .footer-section p, .footer-section a, .footer-section button { color: var(--text-muted); font-size: 0.9rem; text-decoration: none; display: block; margin-bottom: 0.5rem; cursor: pointer; }
         .footer-section a:hover { text-decoration: underline; }
+        .footer-section button { background: transparent; border: none; text-align: left; padding: 0; width: auto; font-family: inherit; }
+        .footer-section button:hover { text-decoration: underline; }
     </style>
 </head>
 <body>
@@ -98,13 +100,13 @@
     <nav class="no-print" role="navigation" aria-label="Main Navigation">
         <div class="logo" role="banner">NGU</div>
         <div class="nav-links">
-            <a onclick="showPage('main-home')" role="link" aria-label="Home Page">Home</a>
-            <a onclick="showPage('academics-page')" role="link" aria-label="Academic Programs">Academics</a>
-            <a onclick="showPage('admissions-page')" role="link" aria-label="Admissions and Requirements">Admissions</a>
-            <a onclick="showPage('campus-page')" role="link" aria-label="Campus Life">Campus</a>
-            <a onclick="showPage('alumni-page')" role="link" aria-label="Alumni Association">Alumni</a>
-            <a onclick="showPage('about-page')" role="link" aria-label="About NGU">About</a>
-            <a onclick="showPage('auth-page')" role="link" aria-label="Student and Staff Portal">Portal</a>
+            <button type="button" onclick="showPage('main-home')" aria-label="Home Page">Home</button>
+            <button type="button" onclick="showPage('academics-page')" aria-label="Academic Programs">Academics</button>
+            <button type="button" onclick="showPage('admissions-page')" aria-label="Admissions and Requirements">Admissions</button>
+            <button type="button" onclick="showPage('campus-page')" aria-label="Campus Life">Campus</button>
+            <button type="button" onclick="showPage('alumni-page')" aria-label="Alumni Association">Alumni</button>
+            <button type="button" onclick="showPage('about-page')" aria-label="About NGU">About</button>
+            <button type="button" onclick="showPage('auth-page')" aria-label="Student and Staff Portal">Portal</button>
         </div>
     </nav>
 
@@ -594,11 +596,11 @@
             </div>
             <div class="footer-section">
                 <h4>Quick Links</h4>
-                <a onclick="showPage('academics-page')">Programs</a>
-                <a onclick="showPage('admissions-page')">Apply Now</a>
-                <a onclick="showPage('campus-page')">Campus Life</a>
-                <a onclick="showPage('alumni-page')">Alumni</a>
-                <a onclick="showPage('about-page')">Our History</a>
+                <button type="button" onclick="showPage('academics-page')">Programs</button>
+                <button type="button" onclick="showPage('admissions-page')">Apply Now</button>
+                <button type="button" onclick="showPage('campus-page')">Campus Life</button>
+                <button type="button" onclick="showPage('alumni-page')">Alumni</button>
+                <button type="button" onclick="showPage('about-page')">Our History</button>
             </div>
             <div class="footer-section">
                 <h4>Contact Us</h4>
@@ -621,8 +623,17 @@
             }
             if (!localStorage.getItem('ngu_lec_pins')) {
                 const defaultPins = {};
-                lecturerPool.forEach(lec => defaultPins[lec] = "1234");
+                const forceChange = {};
+                lecturerPool.forEach(lec => {
+                    // Generate cryptographically random 6-digit PIN
+                    const randomValues = new Uint32Array(1);
+                    crypto.getRandomValues(randomValues);
+                    const pin = String(randomValues[0] % 1000000).padStart(6, '0');
+                    defaultPins[lec] = pin;
+                    forceChange[lec] = true; // Mark for mandatory change on first login
+                });
                 localStorage.setItem('ngu_lec_pins', JSON.stringify(defaultPins));
+                localStorage.setItem('ngu_lec_force_change', JSON.stringify(forceChange));
             }
         }
 
@@ -640,21 +651,37 @@
             "Web Development", "Operating Systems", "Cloud Computing", "Mobile Dev"
         ];
 
-        const lecturersData = {};
-        for(let y=1; y<=4; y++) {
-            lecturersData[y] = { "Sem 1": [], "Sem 2": [] };
-            ["Sem 1", "Sem 2"].forEach(s => {
-                const count = Math.floor(Math.random() * 4) + 7;
-                for(let i=0; i<count; i++) {
-                    lecturersData[y][s].push({
-                        s: units[Math.floor(Math.random() * units.length)] + " " + (i+1),
-                        l: lecturerPool[Math.floor(Math.random() * lecturerPool.length)]
-                    });
-                }
-            });
+        function generateLecturersData() {
+            const data = {};
+            for(let y=1; y<=4; y++) {
+                data[y] = { "Sem 1": [], "Sem 2": [] };
+                ["Sem 1", "Sem 2"].forEach(s => {
+                    const count = Math.floor(Math.random() * 4) + 7;
+                    for(let i=0; i<count; i++) {
+                        data[y][s].push({
+                            s: units[Math.floor(Math.random() * units.length)] + " " + (i+1),
+                            l: lecturerPool[Math.floor(Math.random() * lecturerPool.length)]
+                        });
+                    }
+                });
+            }
+            return data;
         }
 
-        let pageHistory = ['auth-page'];
+        function getLecturersData() {
+            const stored = localStorage.getItem('ngu_lecturers_catalog');
+            if (stored) {
+                return JSON.parse(stored);
+            }
+            // Generate and persist catalog on first access
+            const newCatalog = generateLecturersData();
+            localStorage.setItem('ngu_lecturers_catalog', JSON.stringify(newCatalog));
+            return newCatalog;
+        }
+
+        const lecturersData = getLecturersData();
+
+        let pageHistory = ['main-home'];
         let currentIndex = 0;
         let selectedLecObj = null;
         let currentStudentEmail = "";
@@ -734,10 +761,21 @@
             const name = document.getElementById('lec-user').value;
             const pass = document.getElementById('lec-pass').value;
             const savedPINs = JSON.parse(localStorage.getItem('ngu_lec_pins')) || {};
+            const forceChange = JSON.parse(localStorage.getItem('ngu_lec_force_change')) || {};
             const correctPIN = savedPINs[name];
 
             if(lecturerPool.includes(name) && correctPIN && pass === correctPIN) {
                 activeLecName = name;
+
+                // Check if PIN change is required
+                if(forceChange[name]) {
+                    alert("First-time login detected. You must change your auto-generated PIN before accessing the dashboard.");
+                    showPage('lec-dashboard');
+                    renderLecturerDashboard(name);
+                    document.getElementById('lec-settings').style.display = 'block';
+                    return;
+                }
+
                 renderLecturerDashboard(name);
                 showPage('lec-dashboard');
             } else { alert("Lecturer not found or invalid PIN."); }
@@ -752,8 +790,11 @@
             const newPin = document.getElementById('new-lec-pin').value;
             if(newPin.length < 4) return alert("PIN must be at least 4 digits.");
             const savedPINs = JSON.parse(localStorage.getItem('ngu_lec_pins')) || {};
+            const forceChange = JSON.parse(localStorage.getItem('ngu_lec_force_change')) || {};
             savedPINs[activeLecName] = newPin;
+            forceChange[activeLecName] = false; // Clear force-change flag
             localStorage.setItem('ngu_lec_pins', JSON.stringify(savedPINs));
+            localStorage.setItem('ngu_lec_force_change', JSON.stringify(forceChange));
             alert("PIN Updated successfully!");
             toggleLecSettings();
         }
@@ -881,7 +922,15 @@
             updateNavButtons();
         }
 
-        function verifyAdmin() {
+        async function hashPassword(password) {
+            const encoder = new TextEncoder();
+            const data = encoder.encode(password);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+
+        async function verifyAdmin() {
             const user = document.getElementById('admin-user').value;
             const pass = document.getElementById('admin-pass').value;
             if(!user || !pass) return alert("Credentials required.");
@@ -889,16 +938,25 @@
             const admin = JSON.parse(localStorage.getItem('ngu_admin'));
 
             if(!admin) {
-                // First-time registration
-                localStorage.setItem('ngu_admin', JSON.stringify({ username: user, password: pass }));
-                alert("Admin account registered successfully!");
+                // First-time registration with security requirements
+                if(pass.length < 12) {
+                    return alert("Security requirement: Admin password must be at least 12 characters long.");
+                }
+
+                const hashedPass = await hashPassword(pass);
+                localStorage.setItem('ngu_admin', JSON.stringify({ username: user, passwordHash: hashedPass }));
+                alert("Admin account registered successfully! This is a one-time setup.");
                 document.getElementById('admin-setup-msg').style.display = 'none';
                 document.getElementById('admin-auth-btn').innerText = 'Authorize';
                 showPage('admin-dashboard');
             } else {
-                if(user === admin.username && pass === admin.password) {
+                // Verify against existing admin - prevent re-registration
+                const hashedPass = await hashPassword(pass);
+                if(user === admin.username && hashedPass === admin.passwordHash) {
                     showPage('admin-dashboard');
-                } else { alert("Unauthorized."); }
+                } else {
+                    alert("Unauthorized. Admin account already exists.");
+                }
             }
         }
 
