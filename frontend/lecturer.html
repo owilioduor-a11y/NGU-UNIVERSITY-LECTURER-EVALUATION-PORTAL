@@ -8,6 +8,10 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://images.unsplash.com" />
+    <link rel="dns-prefetch" href="https://images.unsplash.com" />
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin />
+    <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com" />
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
 
@@ -42,8 +46,6 @@
             <span class="hidden sm:inline">Nexus Global University &middot; Office of Academic Quality</span>
             <span class="sm:hidden">Nexus Global University</span>
             <nav class="flex items-center gap-5">
-                <a href="login.html">myNGU</a>
-                <a href="index.html#departments">Schools</a>
                 <a href="#" class="hidden sm:inline">Give</a>
             </nav>
         </div>
@@ -63,15 +65,9 @@
                     <button type="submit"><i class="fa-solid fa-magnifying-glass"></i> Search</button>
                 </form>
 
-                <nav class="nav-links hidden lg:flex">
-                    <a href="index.html#departments">Browse Departments</a>
-                    <a href="index.html?sort=rating#directory">Top Rated</a>
-                    <a href="add-review.html" data-page="add-review">Write a Review</a>
-                </nav>
-
                 <div class="flex items-center gap-3">
                     <span class="inline-flex items-center gap-2" data-session-slot></span>
-                    <button class="nav-toggle lg:hidden" data-nav-toggle aria-label="Open menu" aria-expanded="false">
+                    <button class="nav-toggle" data-nav-toggle aria-label="Open menu" aria-expanded="false" aria-controls="site-menu">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
                             <line x1="3" y1="6" x2="21" y2="6"></line>
                             <line x1="3" y1="12" x2="21" y2="12"></line>
@@ -82,21 +78,37 @@
             </div>
         </div>
 
-        <div class="mobile-nav hidden lg:hidden" data-nav-panel>
-            <div class="shell py-4 flex flex-col gap-4">
+        <div class="mobile-nav" id="site-menu" role="dialog" aria-modal="true" aria-label="Site menu" data-nav-panel>
+            <div class="mobile-nav-head">
+                <a class="brand" href="index.html" data-menu-link>
+                    <span class="brand-mark">E</span>
+                    <span>EduReview<span class="brand-dot">.</span></span>
+                </a>
+                <button class="nav-close" data-nav-close aria-label="Close menu" aria-controls="site-menu">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            <div class="mobile-nav-body">
                 <form class="nav-search flex w-full" data-nav-search role="search">
                     <input type="search" placeholder="Search lecturers…" aria-label="Search" data-nav-search-input />
                     <button type="submit"><i class="fa-solid fa-magnifying-glass"></i> Search</button>
                 </form>
-                <nav class="flex flex-col gap-3">
-                    <a href="index.html#departments">Browse Departments</a>
-                    <a href="index.html?sort=rating#directory">Top Rated</a>
-                    <a href="add-review.html">Write a Review</a>
-                    <a href="login.html">Sign In</a>
+                <p class="menu-caption">Menu</p>
+                <nav class="flex flex-col gap-1" aria-label="Primary">
+                    <a href="index.html" data-page="home" data-menu-link>Home</a>
+                    <a href="index.html?sort=rating#directory" data-menu-link>Top Rated Lecturers</a>
+                    <a href="index.html#departments" data-menu-link>Browse Departments</a>
+                    <a href="add-review.html" data-page="add-review" data-menu-link>Write a Review</a>
+                    <a href="login.html" data-page="login" data-menu-link>Sign In / Portal</a>
                 </nav>
             </div>
         </div>
     </header>
+
+    <div class="nav-backdrop" data-nav-backdrop aria-hidden="true"></div>
 
     <main id="main" class="section-space">
         <div class="shell" id="lecturer-profile">

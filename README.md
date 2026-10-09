@@ -1,9 +1,12 @@
 # NGU University Lecturer Evaluation Portal
 
 A full-stack lecturer evaluation portal for Nexus Global University (NGU).
-Students search lecturers, submit anonymous satisfaction reviews (0–100%), and
-view aggregated ratings and sentiment. Lecturers sign in with a PIN to read their
-own feedback, and administrators manage the registry.
+Only signed-in student accounts can submit reviews; students search lecturers,
+share satisfaction ratings (0–100%), and view aggregated ratings and sentiment.
+A unified split-screen login portal (Student · Lecturer · Admin) gates access:
+students and administrators authenticate with the persisted account table, and
+lecturers authenticate with faculty credentials. Administrators manage the
+registry.
 
 The project ships a **Flask + SQLite** backend, an **optional Spring Boot**
 microservice, and a static **HTML/CSS/JS** frontend.
@@ -47,13 +50,14 @@ lecturer-review-app/
 ├── frontend/                       # Static UI
 │   ├── css/
 │   │   ├── style.css               # Layout, responsive design, colours, typography
-│   │   └── components.css          # Cards, forms, buttons, badges
+│   │   ├── components.css          # Cards, forms, buttons, badges
+│   │   └── login.css               # Split-screen login portal & role theming
 │   ├── js/
 │   │   └── main.js                 # Interactivity / fetch requests
 │   ├── index.html                  # Home / lecturer search
 │   ├── lecturer.html               # Lecturer profile & reviews
 │   ├── add-review.html             # Submit a review
-│   └── login.html                  # Authentication
+│   └── login.html                  # Unified auth portal (student / lecturer / admin)
 │
 └── database/
     └── schema.sql                  # SQL initialization script
@@ -101,7 +105,7 @@ Settings live in `.env`:
 | GET    | `/api/lecturers/{id}`                 | Lecturer profile + reviews          |
 | POST   | `/api/lecturers`                      | Create a lecturer                   |
 | GET    | `/api/reviews`                        | List reviews                        |
-| POST   | `/api/reviews`                        | Submit a review                     |
+| POST   | `/api/reviews`                        | Submit a review (survey responses persisted) |
 | GET    | `/api/reviews/lecturer/{id}`          | Reviews for one lecturer            |
 | GET    | `/api/analytics/overview`             | Portal-wide analytics               |
 | GET    | `/api/analytics/lecturer/{id}`        | Per-lecturer analytics              |
@@ -134,6 +138,8 @@ sqlite3 database/app.db < database/schema.sql
 
 ## Notes
 
+* Submitting a review (`POST /api/reviews`) requires a `student_email` that
+  matches a registered student account; `GET` endpoints remain public.
 * Reviews are stored with a sentiment label computed by
   `analytics_service.analyze_sentiment` (lexicon-based, no external services).
 * Passwords and lecturer PINs are hashed with Werkzeug (Python) / BCrypt (Java).

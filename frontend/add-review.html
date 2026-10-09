@@ -8,6 +8,10 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://images.unsplash.com" />
+    <link rel="dns-prefetch" href="https://images.unsplash.com" />
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin />
+    <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com" />
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
 
@@ -42,8 +46,6 @@
             <span class="hidden sm:inline">Nexus Global University &middot; Office of Academic Quality</span>
             <span class="sm:hidden">Nexus Global University</span>
             <nav class="flex items-center gap-5">
-                <a href="login.html">myNGU</a>
-                <a href="index.html#departments">Schools</a>
                 <a href="#" class="hidden sm:inline">Give</a>
             </nav>
         </div>
@@ -63,15 +65,9 @@
                     <button type="submit"><i class="fa-solid fa-magnifying-glass"></i> Search</button>
                 </form>
 
-                <nav class="nav-links hidden lg:flex">
-                    <a href="index.html#departments">Browse Departments</a>
-                    <a href="index.html?sort=rating#directory">Top Rated</a>
-                    <a href="add-review.html" data-page="add-review">Write a Review</a>
-                </nav>
-
                 <div class="flex items-center gap-3">
                     <span class="inline-flex items-center gap-2" data-session-slot></span>
-                    <button class="nav-toggle lg:hidden" data-nav-toggle aria-label="Open menu" aria-expanded="false">
+                    <button class="nav-toggle" data-nav-toggle aria-label="Open menu" aria-expanded="false" aria-controls="site-menu">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
                             <line x1="3" y1="6" x2="21" y2="6"></line>
                             <line x1="3" y1="12" x2="21" y2="12"></line>
@@ -82,21 +78,37 @@
             </div>
         </div>
 
-        <div class="mobile-nav hidden lg:hidden" data-nav-panel>
-            <div class="shell py-4 flex flex-col gap-4">
+        <div class="mobile-nav" id="site-menu" role="dialog" aria-modal="true" aria-label="Site menu" data-nav-panel>
+            <div class="mobile-nav-head">
+                <a class="brand" href="index.html" data-menu-link>
+                    <span class="brand-mark">E</span>
+                    <span>EduReview<span class="brand-dot">.</span></span>
+                </a>
+                <button class="nav-close" data-nav-close aria-label="Close menu" aria-controls="site-menu">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            <div class="mobile-nav-body">
                 <form class="nav-search flex w-full" data-nav-search role="search">
                     <input type="search" placeholder="Search lecturers…" aria-label="Search" data-nav-search-input />
                     <button type="submit"><i class="fa-solid fa-magnifying-glass"></i> Search</button>
                 </form>
-                <nav class="flex flex-col gap-3">
-                    <a href="index.html#departments">Browse Departments</a>
-                    <a href="index.html?sort=rating#directory">Top Rated</a>
-                    <a href="add-review.html">Write a Review</a>
-                    <a href="login.html">Sign In</a>
+                <p class="menu-caption">Menu</p>
+                <nav class="flex flex-col gap-1" aria-label="Primary">
+                    <a href="index.html" data-page="home" data-menu-link>Home</a>
+                    <a href="index.html?sort=rating#directory" data-menu-link>Top Rated Lecturers</a>
+                    <a href="index.html#departments" data-menu-link>Browse Departments</a>
+                    <a href="add-review.html" data-page="add-review" data-menu-link>Write a Review</a>
+                    <a href="login.html" data-page="login" data-menu-link>Sign In / Portal</a>
                 </nav>
             </div>
         </div>
     </header>
+
+    <div class="nav-backdrop" data-nav-backdrop aria-hidden="true"></div>
 
     <main id="main" class="section-space">
         <div class="shell max-w-3xl">
@@ -105,12 +117,25 @@
                 <h1 class="mt-2">Submit a review</h1>
                 <div class="section-rule section-rule--center"></div>
                 <p class="muted max-w-xl mx-auto">
-                    Your feedback is anonymous by default. Share honest, constructive comments
-                    to help improve teaching quality across the university.
+                    Only registered NGU students may submit lecturer evaluations. Sign in with
+                    your student account to share honest, constructive feedback that helps improve
+                    teaching quality across the university.
                 </p>
             </div>
 
-            <div class="card card-elevated">
+            <div id="review-gate" class="card card-elevated hidden">
+                <div class="text-center py-8">
+                    <span class="inline-flex items-center justify-center w-12 h-12 mb-4" style="background:rgba(165,28,48,.1);color:var(--crimson);"><i class="fa-solid fa-user-lock fa-lg"></i></span>
+                    <h3>Student sign-in required</h3>
+                    <p class="muted max-w-md mx-auto mb-6">
+                        Only registered NGU students may submit lecturer evaluations.
+                        Sign in with your student account to continue.
+                    </p>
+                    <a id="gate-login-link" class="btn" href="login.html?redirect=add-review.html">Sign in to continue</a>
+                </div>
+            </div>
+
+            <div id="review-card" class="card card-elevated">
                 <div id="form-error" class="alert alert-error hidden"></div>
 
                 <form id="review-form" novalidate>
@@ -139,57 +164,130 @@
                         </div>
                     </div>
 
-                    <div class="mb-6">
-                        <div class="flex items-center justify-between mb-3">
-                            <label class="mb-0">Evaluation Metrics</label>
-                            <span class="text-xs text-gray-500 lowercase tracking-normal">Rate each from 1 to 5</span>
-                        </div>
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <div class="metric-block">
-                                <div class="metric-head">
-                                    <span class="metric-name">Clarity</span>
-                                    <span class="metric-value" data-metric-value="clarity">4</span>
-                                </div>
-                                <input type="range" min="1" max="5" step="1" value="4" data-metric="clarity" aria-label="Clarity" />
-                                <div class="metric-scale"><span>Poor</span><span>Excellent</span></div>
-                            </div>
-                            <div class="metric-block">
-                                <div class="metric-head">
-                                    <span class="metric-name">Grading Criteria</span>
-                                    <span class="metric-value" data-metric-value="grading">4</span>
-                                </div>
-                                <input type="range" min="1" max="5" step="1" value="4" data-metric="grading" aria-label="Grading Criteria" />
-                                <div class="metric-scale"><span>Unclear</span><span>Fair</span></div>
-                            </div>
-                            <div class="metric-block">
-                                <div class="metric-head">
-                                    <span class="metric-name">Helpfulness</span>
-                                    <span class="metric-value" data-metric-value="helpfulness">4</span>
-                                </div>
-                                <input type="range" min="1" max="5" step="1" value="4" data-metric="helpfulness" aria-label="Helpfulness" />
-                                <div class="metric-scale"><span>Poor</span><span>Excellent</span></div>
+                    <!-- Section 01 · Teaching skills -->
+                    <div class="survey-section">
+                        <div class="survey-header">
+                            <span class="survey-index">01</span>
+                            <div>
+                                <h3>Lecturer's Teaching Skills</h3>
+                                <p>Join us in assessing the teaching skills of your lecturer.</p>
                             </div>
                         </div>
-                        <p class="text-xs text-gray-500 mt-3 mb-0">
-                            Overall score is calculated automatically from the three metrics.
-                        </p>
+
+                        <fieldset class="survey-question">
+                            <legend class="survey-question-title">How would you rate the clarity of the lecturer's explanations?</legend>
+                            <div class="survey-options">
+                                <label class="survey-option"><input type="radio" name="clarity" value="5" /><span>Very clear</span></label>
+                                <label class="survey-option"><input type="radio" name="clarity" value="4" /><span>Somewhat clear</span></label>
+                                <label class="survey-option"><input type="radio" name="clarity" value="3" /><span>Neutral</span></label>
+                                <label class="survey-option"><input type="radio" name="clarity" value="2" /><span>Somewhat unclear</span></label>
+                                <label class="survey-option"><input type="radio" name="clarity" value="1" /><span>Very unclear</span></label>
+                            </div>
+                        </fieldset>
                     </div>
 
-                    <div class="form-group">
-                        <label for="review-comment">Written Feedback</label>
-                        <textarea id="review-comment" placeholder="What worked well? What could be improved?"></textarea>
+                    <!-- Section 02 · Accessibility and responsiveness -->
+                    <div class="survey-section">
+                        <div class="survey-header">
+                            <span class="survey-index">02</span>
+                            <div>
+                                <h3>Lecturer's Accessibility and Responsiveness</h3>
+                                <p>Let's evaluate how the lecturer handles queries and communication.</p>
+                            </div>
+                        </div>
+
+                        <p class="survey-scale-hint">Rate from 1 &ndash; Very Poor to 5 &ndash; Excellent.</p>
+                        <fieldset class="survey-matrix">
+                            <legend class="sr-only">Rate these aspects of accessibility and responsiveness.</legend>
+                            <div class="matrix-grid">
+                                <span class="matrix-corner" aria-hidden="true"></span>
+                                <span class="matrix-head">1</span>
+                                <span class="matrix-head">2</span>
+                                <span class="matrix-head">3</span>
+                                <span class="matrix-head">4</span>
+                                <span class="matrix-head">5</span>
+
+                                <span class="matrix-label">Ease of reaching out to the lecturer</span>
+                                <label class="matrix-opt"><input type="radio" name="reach_out" value="1" /><span>1</span></label>
+                                <label class="matrix-opt"><input type="radio" name="reach_out" value="2" /><span>2</span></label>
+                                <label class="matrix-opt"><input type="radio" name="reach_out" value="3" /><span>3</span></label>
+                                <label class="matrix-opt"><input type="radio" name="reach_out" value="4" /><span>4</span></label>
+                                <label class="matrix-opt"><input type="radio" name="reach_out" value="5" /><span>5</span></label>
+
+                                <span class="matrix-label">Promptness in responding to queries or emails</span>
+                                <label class="matrix-opt"><input type="radio" name="responsiveness" value="1" /><span>1</span></label>
+                                <label class="matrix-opt"><input type="radio" name="responsiveness" value="2" /><span>2</span></label>
+                                <label class="matrix-opt"><input type="radio" name="responsiveness" value="3" /><span>3</span></label>
+                                <label class="matrix-opt"><input type="radio" name="responsiveness" value="4" /><span>4</span></label>
+                                <label class="matrix-opt"><input type="radio" name="responsiveness" value="5" /><span>5</span></label>
+
+                                <span class="matrix-label">Availability during office hours</span>
+                                <label class="matrix-opt"><input type="radio" name="office_hours" value="1" /><span>1</span></label>
+                                <label class="matrix-opt"><input type="radio" name="office_hours" value="2" /><span>2</span></label>
+                                <label class="matrix-opt"><input type="radio" name="office_hours" value="3" /><span>3</span></label>
+                                <label class="matrix-opt"><input type="radio" name="office_hours" value="4" /><span>4</span></label>
+                                <label class="matrix-opt"><input type="radio" name="office_hours" value="5" /><span>5</span></label>
+
+                                <span class="matrix-label">Willingness to provide additional assistance or explanation</span>
+                                <label class="matrix-opt"><input type="radio" name="assistance" value="1" /><span>1</span></label>
+                                <label class="matrix-opt"><input type="radio" name="assistance" value="2" /><span>2</span></label>
+                                <label class="matrix-opt"><input type="radio" name="assistance" value="3" /><span>3</span></label>
+                                <label class="matrix-opt"><input type="radio" name="assistance" value="4" /><span>4</span></label>
+                                <label class="matrix-opt"><input type="radio" name="assistance" value="5" /><span>5</span></label>
+                            </div>
+                        </fieldset>
                     </div>
 
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="reviewer-name">Your name (optional)</label>
-                            <input type="text" id="reviewer-name" placeholder="Anonymous" />
+                    <!-- Section 03 · Course material quality -->
+                    <div class="survey-section">
+                        <div class="survey-header">
+                            <span class="survey-index">03</span>
+                            <div>
+                                <h3>Course Material Quality</h3>
+                                <p>We would love to hear your thoughts on the course material.</p>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label for="reviewer-email">Email (optional, not published)</label>
-                            <input type="email" id="reviewer-email" placeholder="you@ngu.edu" />
+
+                        <fieldset class="survey-question">
+                            <legend class="survey-question-title">Were the course materials provided by the lecturer helpful and clear?</legend>
+                            <div class="survey-options">
+                                <label class="survey-option"><input type="radio" name="material_quality" value="yes" /><span>Yes</span></label>
+                                <label class="survey-option"><input type="radio" name="material_quality" value="no" /><span>No</span></label>
+                            </div>
+                        </fieldset>
+
+                        <div class="survey-note">
+                            <label for="course-comment">Please enter your comment here:</label>
+                            <textarea id="course-comment" placeholder="What do you like about the materials, and what could be improved?"></textarea>
                         </div>
                     </div>
+
+                    <!-- Section 04 · Class management -->
+                    <div class="survey-section">
+                        <div class="survey-header">
+                            <span class="survey-index">04</span>
+                            <div>
+                                <h3>Lecturer's Class Management</h3>
+                                <p>Express your opinions on how the lecturer manages the class.</p>
+                            </div>
+                        </div>
+
+                        <fieldset class="survey-question">
+                            <legend class="survey-question-title">What are some strengths and areas for improvement in the lecturer's class management?</legend>
+                            <div class="survey-checks">
+                                <label class="survey-check"><input type="checkbox" id="check-discipline" name="discipline" value="1" /><span>Maintains discipline effectively</span></label>
+                                <label class="survey-check"><input type="checkbox" id="check-engagement" name="engagement" value="1" /><span>Makes learning engaging with activities or discussions</span></label>
+                                <label class="survey-check"><input type="checkbox" id="check-participation" name="participation" value="1" /><span>Ensures all students participate in learning</span></label>
+                            </div>
+                        </fieldset>
+
+                        <div class="survey-note">
+                            <label for="class-comment">Comment space for further details</label>
+                            <textarea id="class-comment" placeholder="Share any strengths or suggestions for improvement…"></textarea>
+                        </div>
+                    </div>
+
+                    <p id="identity-note" class="text-sm text-gray-500 mb-6"></p>
 
                     <button class="btn btn-block" type="submit">Submit Review</button>
                     <p class="text-center text-xs text-gray-500 mt-4 mb-0">

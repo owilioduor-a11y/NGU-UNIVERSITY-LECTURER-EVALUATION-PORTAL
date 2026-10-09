@@ -97,6 +97,8 @@ body a:hover { color: var(--crimson-dark); }
 
 .section-space { padding: 4.5rem 0; }
 
+#departments, #directory { scroll-margin-top: 96px; }
+
 /* --- Shared type bits --------------------------------------------------- */
 .eyebrow {
     display: inline-block;
@@ -185,35 +187,6 @@ body a:hover { color: var(--crimson-dark); }
 
 .brand-dot { color: var(--crimson); }
 
-.nav-links { align-items: center; gap: 1.75rem; }
-
-.nav-links a {
-    position: relative;
-    padding: 0.25rem 0;
-    color: var(--slate);
-    font-size: 0.79rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-}
-
-.nav-links a::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    bottom: -3px;
-    height: 2px;
-    width: 0;
-    background: var(--crimson);
-    transition: width var(--ease);
-}
-
-.nav-links a:hover,
-.nav-links a.active { color: var(--crimson); }
-
-.nav-links a:hover::after,
-.nav-links a.active::after { width: 100%; }
-
 .nav-search {
     display: flex;
     align-items: center;
@@ -265,12 +238,72 @@ body a:hover { color: var(--crimson-dark); }
 
 .nav-toggle:hover { border-color: var(--crimson); color: var(--crimson); }
 
+/* --- Side drawer menu --------------------------------------------------- */
 .mobile-nav {
-    border-top: 1px solid var(--border);
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    z-index: 200;
+    display: flex;
+    flex-direction: column;
+    width: min(20.5rem, 88vw);
     background: var(--paper);
+    border-right: 1px solid var(--border);
+    transform: translateX(-100%);
+    visibility: hidden;
+    transition: transform var(--ease), visibility var(--ease);
+}
+
+.mobile-nav.open {
+    transform: translateX(0);
+    visibility: visible;
+    box-shadow: 0 0 60px rgba(0, 0, 0, 0.28);
+}
+
+.mobile-nav-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid var(--border);
+}
+
+.mobile-nav-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1.25rem;
+}
+
+.nav-close {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border: 1px solid var(--border-strong);
+    border-radius: 3px;
+    background: var(--paper);
+    color: var(--slate);
+    cursor: pointer;
+}
+
+.nav-close:hover { border-color: var(--crimson); color: var(--crimson); }
+
+.menu-caption {
+    margin: 1.5rem 0 0.5rem;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
 }
 
 .mobile-nav a {
+    display: block;
+    padding: 0.7rem 0.5rem;
+    border-radius: 6px;
     color: var(--slate);
     font-size: 0.85rem;
     font-weight: 600;
@@ -278,7 +311,28 @@ body a:hover { color: var(--crimson-dark); }
     letter-spacing: 0.08em;
 }
 
-.mobile-nav a:hover { color: var(--crimson); }
+.mobile-nav a:hover,
+.mobile-nav a.active {
+    color: var(--crimson);
+    background: rgba(165, 28, 48, 0.05);
+}
+
+.nav-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 190;
+    background: rgba(20, 22, 27, 0.55);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity var(--ease), visibility var(--ease);
+}
+
+.nav-backdrop.open {
+    opacity: 1;
+    visibility: visible;
+}
+
+body.menu-open { overflow: hidden; }
 
 /* --- Hero --------------------------------------------------------------- */
 .hero {

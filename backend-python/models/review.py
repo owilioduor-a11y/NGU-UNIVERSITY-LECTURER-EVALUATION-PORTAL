@@ -17,6 +17,7 @@ class Review(db.Model):
     score = db.Column(db.Integer, nullable=False)
     comment = db.Column(db.Text, nullable=True)
     sentiment = db.Column(db.String(20), nullable=False, default="neutral")
+    responses = db.Column(db.JSON, nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     def to_dict(self) -> dict:
@@ -30,5 +31,6 @@ class Review(db.Model):
             "score": self.score,
             "comment": self.comment,
             "sentiment": self.sentiment,
+            "responses": self.responses,
             "created_at": self.created_at.isoformat() if self.created_at else None,
         }

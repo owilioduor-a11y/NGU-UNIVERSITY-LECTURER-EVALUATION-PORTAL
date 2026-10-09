@@ -3,11 +3,15 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Sign in to the EduReview lecturer evaluation portal." />
+    <meta name="description" content="Sign in to the NGU lecturer evaluation portal — students, lecturers and administrators." />
     <title>Sign In | EduReview</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://images.unsplash.com" />
+    <link rel="dns-prefetch" href="https://images.unsplash.com" />
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin />
+    <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com" />
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
 
@@ -32,8 +36,9 @@
 
     <link rel="stylesheet" href="css/style.css" />
     <link rel="stylesheet" href="css/components.css" />
+    <link rel="stylesheet" href="css/login.css" />
 </head>
-<body data-page="login">
+<body data-page="login" data-role="student">
     <a href="#main" class="skip-link">Skip to content</a>
 
     <!-- Utility bar -->
@@ -42,8 +47,6 @@
             <span class="hidden sm:inline">Nexus Global University &middot; Office of Academic Quality</span>
             <span class="sm:hidden">Nexus Global University</span>
             <nav class="flex items-center gap-5">
-                <a href="login.html">myNGU</a>
-                <a href="index.html#departments">Schools</a>
                 <a href="#" class="hidden sm:inline">Give</a>
             </nav>
         </div>
@@ -63,15 +66,9 @@
                     <button type="submit"><i class="fa-solid fa-magnifying-glass"></i> Search</button>
                 </form>
 
-                <nav class="nav-links hidden lg:flex">
-                    <a href="index.html#departments">Browse Departments</a>
-                    <a href="index.html?sort=rating#directory">Top Rated</a>
-                    <a href="add-review.html" data-page="add-review">Write a Review</a>
-                </nav>
-
                 <div class="flex items-center gap-3">
                     <span class="inline-flex items-center gap-2" data-session-slot></span>
-                    <button class="nav-toggle lg:hidden" data-nav-toggle aria-label="Open menu" aria-expanded="false">
+                    <button class="nav-toggle" data-nav-toggle aria-label="Open menu" aria-expanded="false" aria-controls="site-menu">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
                             <line x1="3" y1="6" x2="21" y2="6"></line>
                             <line x1="3" y1="12" x2="21" y2="12"></line>
@@ -82,152 +79,326 @@
             </div>
         </div>
 
-        <div class="mobile-nav hidden lg:hidden" data-nav-panel>
-            <div class="shell py-4 flex flex-col gap-4">
+        <div class="mobile-nav" id="site-menu" role="dialog" aria-modal="true" aria-label="Site menu" data-nav-panel>
+            <div class="mobile-nav-head">
+                <a class="brand" href="index.html" data-menu-link>
+                    <span class="brand-mark">E</span>
+                    <span>EduReview<span class="brand-dot">.</span></span>
+                </a>
+                <button class="nav-close" data-nav-close aria-label="Close menu" aria-controls="site-menu">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            <div class="mobile-nav-body">
                 <form class="nav-search flex w-full" data-nav-search role="search">
                     <input type="search" placeholder="Search lecturers…" aria-label="Search" data-nav-search-input />
                     <button type="submit"><i class="fa-solid fa-magnifying-glass"></i> Search</button>
                 </form>
-                <nav class="flex flex-col gap-3">
-                    <a href="index.html#departments">Browse Departments</a>
-                    <a href="index.html?sort=rating#directory">Top Rated</a>
-                    <a href="add-review.html">Write a Review</a>
-                    <a href="login.html">Sign In</a>
+                <p class="menu-caption">Menu</p>
+                <nav class="flex flex-col gap-1" aria-label="Primary">
+                    <a href="index.html" data-page="home" data-menu-link>Home</a>
+                    <a href="index.html?sort=rating#directory" data-menu-link>Top Rated Lecturers</a>
+                    <a href="index.html#departments" data-menu-link>Browse Departments</a>
+                    <a href="add-review.html" data-page="add-review" data-menu-link>Write a Review</a>
+                    <a href="login.html" data-page="login" data-menu-link>Sign In / Portal</a>
                 </nav>
             </div>
         </div>
     </header>
 
+    <div class="nav-backdrop" data-nav-backdrop aria-hidden="true"></div>
+
     <main id="main">
-        <div class="grid grid-cols-1 lg:grid-cols-2">
-            <!-- Editorial panel -->
-            <div class="relative hidden lg:block min-h-[calc(100vh-7rem)]">
-                <img src="https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&w=1200&q=80" alt="University campus" class="absolute inset-0 w-full h-full object-cover" />
-                <div class="absolute inset-0" style="background:linear-gradient(150deg, rgba(43,43,42,.92) 0%, rgba(123,18,32,.88) 100%);"></div>
-                <div class="relative h-full flex flex-col justify-end p-12 xl:p-16 text-white">
-                    <span class="eyebrow eyebrow--light">NGU Portal</span>
-                    <h2 class="mt-3 text-white max-w-md">One portal for students, faculty and administrators.</h2>
-                    <p class="mt-4 max-w-md text-white/80 mb-0">
-                        Students submit anonymous evaluations, lecturers review their own feedback,
-                        and administrators manage the academic registry.
-                    </p>
+        <div class="login-shell">
+            <!-- Branding panel (aesthetic shifts with the active role) -->
+            <aside class="brand-panel" aria-label="Portal information">
+                <img class="brand-bg" src="https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&w=1200&q=70" alt="" fetchpriority="high" decoding="async" />
+                <div class="brand-overlay"></div>
+
+                <div class="brand-inner">
+                    <p class="brand-wordmark">EduReview<span class="brand-dot">.</span></p>
+
+                    <!-- Student branding -->
+                    <div class="role-brand" data-role-brand="student">
+                        <span class="eyebrow eyebrow--light">Student Portal</span>
+                        <h2>The teaching you receive shapes everything that follows.</h2>
+                        <p>Sign in to submit lecturer evaluations, follow departments, and help
+                            raise the standard of teaching across Nexus Global University.</p>
+                        <div class="role-brand-stats">
+                            <div><span class="stat-value">10k+</span><span class="stat-label">Evaluations shared</span></div>
+                            <div><span class="stat-value">4.8<span class="text-base">/5</span></span><span class="stat-label">Avg. teaching rating</span></div>
+                        </div>
+                    </div>
+
+                    <!-- Lecturer branding -->
+                    <div class="role-brand hidden" data-role-brand="lecturer">
+                        <span class="eyebrow eyebrow--light">Faculty Portal</span>
+                        <h2>See your impact through the eyes of your students.</h2>
+                        <p>Review your anonymized feedback, track trends across semesters,
+                            and keep improving the craft of teaching.</p>
+                        <div class="role-brand-stats">
+                            <div><span class="stat-value">310+</span><span class="stat-label">Faculty on the registry</span></div>
+                            <div><span class="stat-value">12</span><span class="stat-label">Departments covered</span></div>
+                        </div>
+                    </div>
+
+                    <!-- Admin branding -->
+                    <div class="role-brand hidden" data-role-brand="admin">
+                        <span class="eyebrow eyebrow--light">Admin Console</span>
+                        <h2>Guard the integrity of academic data.</h2>
+                        <p>Manage the registry, departments and evaluation records with
+                            complete audit visibility across the university.</p>
+                        <div class="role-brand-stats">
+                            <div><span class="stat-value">100%</span><span class="stat-label">Audit trail enabled</span></div>
+                            <div><span class="stat-value">24/7</span><span class="stat-label">Activity monitoring</span></div>
+                        </div>
+                    </div>
                 </div>
-            </div>
+            </aside>
 
             <!-- Auth panel -->
-            <div class="flex items-center justify-center px-5 py-12 md:px-10 lg:min-h-[calc(100vh-7rem)] bg-offwhite">
-                <div class="w-full max-w-md">
-                    <div class="mb-7">
-                        <span class="eyebrow">Secure Access</span>
-                        <h1 class="mt-2 mb-2">Sign in</h1>
-                        <p class="muted mb-0">Students, lecturers and administrators.</p>
+            <section class="auth-panel">
+                <div class="auth-wrap">
+                    <!-- Role selector -->
+                    <div class="segmented" role="tablist" aria-label="Select account type">
+                        <button type="button" class="seg-btn active" role="tab" id="tab-student"
+                            data-role-tab="student" aria-selected="true" aria-controls="panel-student">
+                            <i class="fa-solid fa-graduation-cap"></i> Student
+                        </button>
+                        <button type="button" class="seg-btn" role="tab" id="tab-lecturer"
+                            data-role-tab="lecturer" aria-selected="false" aria-controls="panel-lecturer" tabindex="-1">
+                            <i class="fa-solid fa-chalkboard-user"></i> Lecturer
+                        </button>
+                        <button type="button" class="seg-btn" role="tab" id="tab-admin"
+                            data-role-tab="admin" aria-selected="false" aria-controls="panel-admin" tabindex="-1">
+                            <i class="fa-solid fa-shield-halved"></i> Admin
+                        </button>
                     </div>
 
-                    <div class="card card-elevated">
-                        <div class="tabs">
-                            <button class="tab active" data-tab="student">Student</button>
-                            <button class="tab" data-tab="lecturer">Lecturer</button>
-                            <button class="tab" data-tab="admin">Admin</button>
-                        </div>
+                    <!-- Dynamic heading -->
+                    <div class="auth-head">
+                        <span class="eyebrow" id="auth-eyebrow">Student Portal</span>
+                        <h1 id="auth-title">Student sign in</h1>
+                        <p id="auth-sub">Sign in to evaluate your lecturers.</p>
+                    </div>
 
-                        <!-- Student -->
-                        <div data-tab-panel="student">
-                            <form id="student-login-form">
-                                <div class="form-group">
-                                    <label for="student-email">Email</label>
-                                    <input type="email" id="student-email" required />
+                    <!-- ============ STUDENT PANEL ============ -->
+                    <div class="role-panel" role="tabpanel" id="panel-student" data-role-panel="student" aria-labelledby="tab-student">
+                        <div class="auth-card">
+                            <!-- Student login -->
+                            <form id="student-login-form" novalidate>
+                                <div class="field">
+                                    <input type="text" id="student-email" name="identifier" autocomplete="username" placeholder=" " required aria-describedby="student-email-help" />
+                                    <label for="student-email">Institutional email or Student ID</label>
+                                    <span class="field-status"><i class="fa-solid fa-circle-check"></i><i class="fa-solid fa-circle-exclamation"></i></span>
+                                    <p class="field-help" id="student-email-help"></p>
                                 </div>
-                                <div class="form-group">
+
+                                <div class="field">
+                                    <input type="password" id="student-password" name="password" autocomplete="current-password" placeholder=" " required aria-describedby="student-password-help" />
                                     <label for="student-password">Password</label>
-                                    <input type="password" id="student-password" required />
+                                    <span class="field-status"><i class="fa-solid fa-circle-check"></i><i class="fa-solid fa-circle-exclamation"></i></span>
+                                    <button type="button" class="pwd-toggle" data-pwd-toggle="student-password" aria-label="Show password" aria-pressed="false">
+                                        <i class="fa-regular fa-eye"></i>
+                                    </button>
+                                    <p class="field-help" id="student-password-help"></p>
                                 </div>
-                                <button class="btn btn-block" type="submit">Sign In</button>
+
+                                <div class="auth-row">
+                                    <label class="checkbox">
+                                        <input type="checkbox" id="student-remember" />
+                                        <span>Remember me</span>
+                                    </label>
+                                    <a href="#" class="link" id="forgot-password">Forgot password?</a>
+                                </div>
+
+                                <button type="submit" class="btn btn-accent" id="student-login-btn">Sign In</button>
                             </form>
 
-                            <form id="student-signup-form" class="hidden">
-                                <div class="form-group">
+                            <!-- Student sign-up (toggled from the login footer) -->
+                            <form id="student-signup-form" class="hidden" novalidate>
+                                <div class="field">
+                                    <input type="text" id="signup-name" name="name" autocomplete="name" placeholder=" " required aria-describedby="signup-name-help" />
                                     <label for="signup-name">Full name</label>
-                                    <input type="text" id="signup-name" required />
+                                    <span class="field-status"><i class="fa-solid fa-circle-check"></i><i class="fa-solid fa-circle-exclamation"></i></span>
+                                    <p class="field-help" id="signup-name-help"></p>
                                 </div>
-                                <div class="form-group">
-                                    <label for="signup-email">Email</label>
-                                    <input type="email" id="signup-email" required />
+
+                                <div class="field">
+                                    <input type="email" id="signup-email" name="email" autocomplete="username" placeholder=" " required aria-describedby="signup-email-help" />
+                                    <label for="signup-email">Institutional email (&#64;ngu.edu)</label>
+                                    <span class="field-status"><i class="fa-solid fa-circle-check"></i><i class="fa-solid fa-circle-exclamation"></i></span>
+                                    <p class="field-help" id="signup-email-help"></p>
                                 </div>
-                                <div class="form-group">
+
+                                <div class="field">
+                                    <input type="text" id="signup-student-id" name="student_id" inputmode="numeric" autocomplete="off" placeholder=" " required aria-describedby="signup-student-id-help" />
+                                    <label for="signup-student-id">Student ID / enrolment number</label>
+                                    <span class="field-status"><i class="fa-solid fa-circle-check"></i><i class="fa-solid fa-circle-exclamation"></i></span>
+                                    <p class="field-help" id="signup-student-id-help"></p>
+                                </div>
+
+                                <!-- Static placeholder list; replace with GET /departments if desired -->
+                                <div class="field">
+                                    <select id="signup-department" name="department" required aria-describedby="signup-department-help">
+                                        <option value="" selected disabled> </option>
+                                        <option value="Computer Science">Computer Science</option>
+                                        <option value="Software Engineering">Software Engineering</option>
+                                        <option value="Business Administration">Business Administration</option>
+                                        <option value="Accounting &amp; Finance">Accounting &amp; Finance</option>
+                                        <option value="Engineering">Engineering</option>
+                                        <option value="Law">Law</option>
+                                        <option value="Medicine &amp; Health Sciences">Medicine &amp; Health Sciences</option>
+                                        <option value="Nursing">Nursing</option>
+                                        <option value="Economics">Economics</option>
+                                        <option value="Education">Education</option>
+                                        <option value="Architecture">Architecture</option>
+                                        <option value="Arts &amp; Humanities">Arts &amp; Humanities</option>
+                                    </select>
+                                    <label for="signup-department">Department / Major</label>
+                                    <span class="field-status"><i class="fa-solid fa-circle-check"></i><i class="fa-solid fa-circle-exclamation"></i></span>
+                                    <p class="field-help" id="signup-department-help"></p>
+                                </div>
+
+                                <div class="field">
+                                    <input type="password" id="signup-password" name="password" autocomplete="new-password" placeholder=" " required aria-describedby="signup-password-help"
+                                        data-strength="true" />
                                     <label for="signup-password">Password</label>
-                                    <input type="password" id="signup-password" required />
+                                    <span class="field-status"><i class="fa-solid fa-circle-check"></i><i class="fa-solid fa-circle-exclamation"></i></span>
+                                    <button type="button" class="pwd-toggle" data-pwd-toggle="signup-password" aria-label="Show password" aria-pressed="false">
+                                        <i class="fa-regular fa-eye"></i>
+                                    </button>
+                                    <p class="field-help" id="signup-password-help"></p>
+
+                                    <!-- Inline strength checklist -->
+                                    <div class="pwd-meta" data-pwd-meta>
+                                        <div class="pwd-checklist">
+                                            <span class="strength-item" data-check="length"><i class="fa-solid fa-circle"></i> 8+ characters</span>
+                                            <span class="strength-item" data-check="number"><i class="fa-solid fa-circle"></i> 1 number</span>
+                                            <span class="strength-item" data-check="upper"><i class="fa-solid fa-circle"></i> 1 uppercase letter</span>
+                                        </div>
+                                        <div class="strength-bar"><div class="strength-fill" data-strength-fill></div></div>
+                                        <p class="strength-label" data-strength-label>Password strength</p>
+                                    </div>
                                 </div>
-                                <button class="btn btn-block" type="submit">Create Account</button>
+
+                                <div class="field">
+                                    <input type="password" id="signup-confirm" name="confirm" autocomplete="new-password" placeholder=" " required aria-describedby="signup-confirm-help" />
+                                    <label for="signup-confirm">Confirm password</label>
+                                    <span class="field-status"><i class="fa-solid fa-circle-check"></i><i class="fa-solid fa-circle-exclamation"></i></span>
+                                    <button type="button" class="pwd-toggle" data-pwd-toggle="signup-confirm" aria-label="Show password" aria-pressed="false">
+                                        <i class="fa-regular fa-eye"></i>
+                                    </button>
+                                    <p class="field-help" id="signup-confirm-help"></p>
+                                </div>
+
+                                <button type="submit" class="btn btn-accent" id="student-signup-btn">Create Account</button>
                             </form>
 
-                            <p class="text-center muted mt-4 mb-0 text-sm">
-                                <a href="#" id="show-signup">No account? Register</a> &middot;
-                                <a href="#" id="show-login" class="hidden">Back to sign in</a>
-                            </p>
-                        </div>
-
-                        <!-- Lecturer -->
-                        <div data-tab-panel="lecturer" class="hidden">
-                            <div class="form-group">
-                                <label for="lecturer-name">Lecturer name</label>
-                                <input type="text" id="lecturer-name" placeholder="e.g. Dr. Matin" />
-                            </div>
-
-                            <form id="lecturer-login-form">
-                                <div class="form-group" id="pin-entry">
-                                    <label for="lecturer-pin">PIN</label>
-                                    <input type="password" id="lecturer-pin" inputmode="numeric" />
-                                </div>
-                                <button class="btn btn-block" type="submit">Sign In</button>
-                            </form>
-
-                            <form id="lecturer-setup-form" class="hidden">
-                                <div class="form-group" id="pin-setup">
-                                    <label for="new-pin">Set a new PIN</label>
-                                    <input type="password" id="new-pin" inputmode="numeric" />
-                                </div>
-                                <button class="btn btn-block" type="submit">Register PIN</button>
-                            </form>
-                            <p class="muted text-sm mt-3 mb-0">First-time users set a PIN the first time they enter their name.</p>
-                        </div>
-
-                        <!-- Admin -->
-                        <div data-tab-panel="admin" class="hidden">
-                            <form id="admin-login-form">
-                                <div class="form-group">
-                                    <label for="admin-username">Username</label>
-                                    <input type="text" id="admin-username" required />
-                                </div>
-                                <div class="form-group">
-                                    <label for="admin-password">Password</label>
-                                    <input type="password" id="admin-password" required />
-                                </div>
-                                <button class="btn btn-block" type="submit">Authorize</button>
-                            </form>
-
-                            <form id="admin-bootstrap-form" class="hidden">
-                                <div class="form-group">
-                                    <label for="bootstrap-username">Root admin username</label>
-                                    <input type="text" id="bootstrap-username" required />
-                                </div>
-                                <div class="form-group">
-                                    <label for="bootstrap-password">Root admin password</label>
-                                    <input type="password" id="bootstrap-password" required />
-                                </div>
-                                <button class="btn btn-block" type="submit">Create Administrator</button>
-                            </form>
-
-                            <p class="text-center muted mt-4 mb-0 text-sm">
-                                <a href="#" id="show-bootstrap">First-time setup?</a>
+                            <p class="view-switch">
+                                <span data-login-switch-text>New student? <a href="#" class="link" id="show-signup">Create an account</a></span>
+                                <span class="hidden" data-signup-switch-text>Already have an account? <a href="#" class="link" id="show-login">Log in</a></span>
                             </p>
                         </div>
                     </div>
 
-                    <p class="text-center text-xs text-gray-500 mt-5 mb-0">
+                    <!-- ============ LECTURER PANEL ============ -->
+                    <div class="role-panel hidden" role="tabpanel" id="panel-lecturer" data-role-panel="lecturer" aria-labelledby="tab-lecturer">
+                        <div class="auth-card">
+                            <form id="lecturer-login-form" novalidate>
+                                <div class="field">
+                                    <input type="text" id="lecturer-email" name="identifier" autocomplete="username" placeholder=" " required aria-describedby="lecturer-email-help" />
+                                    <label for="lecturer-email">Faculty email or ID</label>
+                                    <span class="field-status"><i class="fa-solid fa-circle-check"></i><i class="fa-solid fa-circle-exclamation"></i></span>
+                                    <p class="field-help" id="lecturer-email-help"></p>
+                                </div>
+
+                                <!-- Auth method: password + 2FA, or SSO -->
+                                <div class="auth-method" role="group" aria-label="Authentication method">
+                                    <button type="button" class="method-btn active" data-method="password" aria-pressed="true">
+                                        <i class="fa-solid fa-key"></i> Password &middot; 2FA
+                                    </button>
+                                    <button type="button" class="method-btn" data-method="sso" aria-pressed="false">
+                                        <i class="fa-solid fa-right-to-bracket"></i> SSO
+                                    </button>
+                                </div>
+
+                                <div data-method-fields="password">
+                                    <div class="field">
+                                        <input type="password" id="lecturer-password" name="password" autocomplete="current-password" placeholder=" " required aria-describedby="lecturer-password-help" />
+                                        <label for="lecturer-password">Password</label>
+                                        <span class="field-status"><i class="fa-solid fa-circle-check"></i><i class="fa-solid fa-circle-exclamation"></i></span>
+                                        <button type="button" class="pwd-toggle" data-pwd-toggle="lecturer-password" aria-label="Show password" aria-pressed="false">
+                                            <i class="fa-regular fa-eye"></i>
+                                        </button>
+                                        <p class="field-help" id="lecturer-password-help"></p>
+                                    </div>
+
+                                    <!-- 2FA placeholder (connect your TOTP/SMS provider later) -->
+                                    <div class="field" data-2fa-field>
+                                        <input type="text" id="lecturer-2fa" name="otp" inputmode="numeric" autocomplete="one-time-code" placeholder=" " aria-describedby="lecturer-2fa-help" maxlength="6" />
+                                        <label for="lecturer-2fa">6-digit authentication code</label>
+                                        <span class="field-status"><i class="fa-solid fa-circle-check"></i><i class="fa-solid fa-circle-exclamation"></i></span>
+                                        <p class="field-help" id="lecturer-2fa-help"></p>
+                                    </div>
+
+                                    <button type="submit" class="btn btn-accent" id="lecturer-login-btn">Sign In Securely</button>
+                                </div>
+
+                                <!-- SSO placeholder button -->
+                                <div data-method-fields="sso" class="hidden">
+                                    <button type="button" class="btn btn-accent" id="lecturer-sso-btn">
+                                        <i class="fa-solid fa-id-badge"></i> Continue with Single Sign-On
+                                    </button>
+                                    <p class="field-help text-center" style="margin-top:.6rem;">Redirects to your institution's identity provider.</p>
+                                </div>
+                            </form>
+
+                            <p class="view-switch">
+                                <a href="#" class="link" id="forgot-faculty-password">Forgot faculty password?</a>
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- ============ ADMIN PANEL ============ -->
+                    <div class="role-panel hidden" role="tabpanel" id="panel-admin" data-role-panel="admin" aria-labelledby="tab-admin">
+                        <div class="auth-card">
+                            <form id="admin-login-form" novalidate>
+                                <div class="field">
+                                    <input type="text" id="admin-username" name="username" autocomplete="username" placeholder=" " required aria-describedby="admin-username-help" />
+                                    <label for="admin-username">Admin username or email</label>
+                                    <span class="field-status"><i class="fa-solid fa-circle-check"></i><i class="fa-solid fa-circle-exclamation"></i></span>
+                                    <p class="field-help" id="admin-username-help"></p>
+                                </div>
+
+                                <div class="field">
+                                    <input type="password" id="admin-password" name="password" autocomplete="current-password" placeholder=" " required aria-describedby="admin-password-help" />
+                                    <label for="admin-password">Secure password</label>
+                                    <span class="field-status"><i class="fa-solid fa-circle-check"></i><i class="fa-solid fa-circle-exclamation"></i></span>
+                                    <button type="button" class="pwd-toggle" data-pwd-toggle="admin-password" aria-label="Show password" aria-pressed="false">
+                                        <i class="fa-regular fa-eye"></i>
+                                    </button>
+                                    <p class="field-help" id="admin-password-help"></p>
+                                </div>
+
+                                <button type="submit" class="btn btn-accent" id="admin-login-btn">Authorize</button>
+                            </form>
+
+                            <div class="security-note" role="note">
+                                <i class="fa-solid fa-shield-halved"></i>
+                                <span>Authorized personnel only. All activity is logged and audited.</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <p class="text-center text-xs" style="color:var(--muted-text);margin-top:1.5rem;">
                         &copy; Nexus Global University &middot; Protected by institutional information policy.
                     </p>
                 </div>
-            </div>
+            </section>
         </div>
     </main>
 

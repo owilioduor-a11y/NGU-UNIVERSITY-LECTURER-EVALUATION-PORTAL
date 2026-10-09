@@ -2,7 +2,7 @@
 from flask import Blueprint, jsonify, request
 
 from config import settings
-from models import Lecturer, Review, db
+from models import Lecturer, Review, User, db
 from services import analytics_service
 
 review_bp = Blueprint("reviews", __name__, url_prefix="/api")
@@ -124,14 +124,27 @@ def create_review():
         return _json_error("Score must be between 0 and 100.")
 
     comment = (payload.get("comment") or "").strip()
+
+    # Store the structured survey answers (all four sections), if provided.
+    responses = payload.get("responses")
+    if responses is not None and not isinstance(responses, dict):
+        return _json_error("Responses must be a structured object.")
+
+    # Only authenticated students may submit reviews.
+    student_email = (payload.get("student_email") or "").strip().lower()
+    student = User.query.filter_by(email=student_email, role="student").first()
+    if not student:
+        return _json_error("Please sign in as a student to submit a review.", 401)
+
     review = Review(
-        student_name=(payload.get("student_name") or payload.get("name") or "Anonymous").strip(),
-        student_email=(payload.get("student_email") or payload.get("email") or "").strip() or None,
+        student_name=(payload.get("student_name") or student.name or "Anonymous").strip(),
+        student_email=student.email,
         lecturer_id=lecturer.id,
         unit=unit,
         score=score,
         comment=comment,
         sentiment=analytics_service.analyze_sentiment(comment),
+        responses=responses,
     )
     db.session.add(review)
     db.session.commit()
