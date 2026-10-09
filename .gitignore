@@ -1,5 +1,36 @@
+# Environment
+.env
+
+# Node (legacy, kept ignored)
 node_modules/
 package-lock.json
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+.pytest_cache/
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Java / Maven
+target/
+*.class
+.mvn/
+
+# IDE / OS
+.idea/
+.vscode/
+*.iml
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
 server.log
-*.png
-.env

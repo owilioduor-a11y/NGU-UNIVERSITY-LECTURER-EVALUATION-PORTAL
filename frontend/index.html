@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Nexus Global University - search lecturers and read student evaluations." />
+    <title>NGU Lecturer Evaluation Portal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/components.css" />
+</head>
+<body data-page="home">
+    <header class="navbar">
+        <div class="container">
+            <a class="brand" href="index.html">NGU<span>.</span></a>
+            <nav class="nav-links">
+                <a href="index.html" data-page="home">Home</a>
+                <a href="index.html#lecturers" data-page="lecturer">Lecturers</a>
+                <a href="add-review.html" data-page="add-review">Write Review</a>
+                <a href="login.html" data-page="login">Portal</a>
+            </nav>
+            <div class="nav-actions">
+                <button class="theme-toggle" data-theme-toggle aria-label="Toggle colour theme">☾</button>
+                <span data-session-slot></span>
+            </div>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="container">
+            <span class="eyebrow">Academic Quality Assurance</span>
+            <h1>Honest feedback.<br />Better teaching.</h1>
+            <p>
+                Search every Nexus Global University lecturer, read anonymous student
+                evaluations, and contribute your own review to improve the learning experience.
+            </p>
+            <div class="hero-actions">
+                <a class="btn btn-light" href="#lecturers">Browse lecturers</a>
+                <a class="btn btn-outline" style="border-color:rgba(255,255,255,0.4);color:#fff;" href="add-review.html">Submit a review</a>
+            </div>
+        </div>
+    </section>
+
+    <main class="section" id="lecturers">
+        <div class="container">
+            <div class="card" style="margin-bottom:2rem;">
+                <div class="form-row">
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label for="search-input">Search by name</label>
+                        <input type="search" id="search-input" placeholder="e.g. Dr. Matin" autocomplete="off" />
+                    </div>
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label for="department-filter">Department</label>
+                        <select id="department-filter">
+                            <option value="">All departments</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
+                <h2 style="margin:0;">Lecturers</h2>
+                <span class="muted" id="result-count">Loading…</span>
+            </div>
+
+            <div class="grid grid-4" id="lecturer-grid">
+                <div class="skeleton"></div>
+                <div class="skeleton"></div>
+                <div class="skeleton"></div>
+                <div class="skeleton"></div>
+            </div>
+        </div>
+    </main>
+
+    <section class="section" style="background:var(--surface-alt);">
+        <div class="container grid grid-3">
+            <div>
+                <span class="eyebrow">01 — Search</span>
+                <h3>Find your lecturer</h3>
+                <p class="muted">Filter the directory by name or department to locate the right faculty member.</p>
+            </div>
+            <div>
+                <span class="eyebrow">02 — Review</span>
+                <h3>Share your experience</h3>
+                <p class="muted">Rate satisfaction from 0 to 100% and add constructive feedback.</p>
+            </div>
+            <div>
+                <span class="eyebrow">03 — Improve</span>
+                <h3>Drive quality</h3>
+                <p class="muted">Aggregated ratings and sentiment help departments improve teaching.</p>
+            </div>
+        </div>
+    </section>
+
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div>
+                    <a class="brand" href="index.html">NGU<span>.</span></a>
+                    <p>Nexus Global University — establishing the global standard for higher education through technology and ethical leadership.</p>
+                </div>
+                <div>
+                    <h4>Portal</h4>
+                    <a href="index.html">Lecturer search</a>
+                    <a href="add-review.html">Submit a review</a>
+                    <a href="login.html">Sign in</a>
+                </div>
+                <div>
+                    <h4>Contact</h4>
+                    <a href="mailto:info@ngu.edu">info@ngu.edu</a>
+                    <a href="#">Nairobi, Kenya</a>
+                    <a href="#">+254 700 000 000</a>
+                </div>
+            </div>
+            <div class="footer-bottom">© Nexus Global University. All rights reserved.</div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+</body>
+</html>

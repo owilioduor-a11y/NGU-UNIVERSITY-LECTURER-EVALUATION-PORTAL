@@ -1,42 +1,141 @@
-# NGU-UNIVERSITY-LECTURER-EVALUATION-PORTAL
+# NGU University Lecturer Evaluation Portal
 
-# Nexus Global University (NGU) Student Performance Portal
+A full-stack lecturer evaluation portal for Nexus Global University (NGU).
+Students search lecturers, submit anonymous satisfaction reviews (0–100%), and
+view aggregated ratings and sentiment. Lecturers sign in with a PIN to read their
+own feedback, and administrators manage the registry.
 
-A lightweight, glassmorphic web application designed for academic quality assurance. This portal allows students to evaluate lecturers anonymously and provides administrators with departmental performance data.
+The project ships a **Flask + SQLite** backend, an **optional Spring Boot**
+microservice, and a static **HTML/CSS/JS** frontend.
 
-##  Live Demo
-https://owilioduor-a11y.github.io/NGU-UNIVERSITY-LECTURER-EVALUATION-PORTAL/
+## Project structure
 
-##  Features
+```
+lecturer-review-app/
+├── .gitignore
+├── README.md
+├── requirements.txt
+├── .env
+│
+├── backend-python/                 # Python (Flask) backend
+│   ├── app.py                      # Main application entry point
+│   ├── config/
+│   │   └── settings.py             # App configuration & database URI
+│   ├── models/
+│   │   ├── __init__.py             # SQLAlchemy db instance
+│   │   ├── user.py                 # Student / admin accounts
+│   │   ├── lecturer.py             # Lecturer model
+│   │   └── review.py               # Review model
+│   ├── routes/
+│   │   ├── __init__.py             # Blueprint registration
+│   │   ├── auth_routes.py          # Login / signup endpoints
+│   │   └── review_routes.py        # Lecturer, review & analytics endpoints
+│   └── services/
+│       └── analytics_service.py    # Rating & sentiment analysis
+│
+├── backend-java/                   # Optional Spring Boot microservice
+│   ├── pom.xml
+│   └── src/main/
+│       ├── java/com/review/app/
+│       │   ├── Application.java
+│       │   ├── controller/         # REST controllers
+│       │   ├── model/              # JPA entities
+│       │   └── repository/         # Spring Data repositories
+│       └── resources/
+│           └── application.properties
+│
+├── frontend/                       # Static UI
+│   ├── css/
+│   │   ├── style.css               # Layout, responsive design, colours, typography
+│   │   └── components.css          # Cards, forms, buttons, badges
+│   ├── js/
+│   │   └── main.js                 # Interactivity / fetch requests
+│   ├── index.html                  # Home / lecturer search
+│   ├── lecturer.html               # Lecturer profile & reviews
+│   ├── add-review.html             # Submit a review
+│   └── login.html                  # Authentication
+│
+└── database/
+    └── schema.sql                  # SQL initialization script
+```
 
-### 1. Student Evaluation System
-* **Departmental Filtering:** Students select their specific department (e.g., Computing & IT, Engineering) to access relevant courses.
-* **Unit Tracking:** Real-time tracking of pending vs. completed unit evaluations.
-* **Anonymous Feedback:** 0-100% sliding scale for satisfaction and text-based improvement suggestions.
+> `models/user.py` was added beyond the original sketch because authentication
+> (students and admins) needs a persisted account table.
 
-### 2. Administrator Dashboard
-* **Departmental Analytics:** Filter evaluation records by department for targeted academic reviews.
-* **Evaluation Scheduling:** Set global start and end dates to control portal access.
-* **Data Export:** Integrated PDF export functionality for performance reports.
+## Quick start (Python backend)
 
-### 3. Lecturer Portal
-* **Performance Overview:** Lecturers can log in to see their average satisfaction percentage.
-* **Feedback Loop:** View anonymous student comments and scores for their specific units.
+```bash
+# 1. Create and activate a virtual environment
+python -m venv .venv
+.venv\Scripts\activate          # Windows
+# source .venv/bin/activate     # macOS / Linux
 
-## Technical Stack
-* **Frontend:** HTML5, CSS3 (Custom Properties, Glassmorphism), JavaScript (ES6+).
-* **Storage:** Browser `localStorage` (No database setup required for experimentation).
-* **Styling:** Responsive design with support for Dark/Light mode.
+# 2. Install dependencies
+pip install -r requirements.txt
 
-##  Access Credentials (Experimentation )
-* **Lecturer Default PIN:** 1234
-*  **admin username** Peter Owili
-*  **admin password** OWILI9526
+# 3. Run the server (serves the API *and* the frontend)
+python backend-python/app.py
+```
 
-## ⚙️ Installation
-1. Clone the repository: `git clone https://https://github.com/owilioduor-a11y/NGU-UNIVERSITY-LECTURER-EVALUATION-PORTAL.git`
-2. Open `index.html` in any modern web browser.
-3. To deploy, push to the `main` branch and enable **GitHub Pages** in settings.
+Open <http://localhost:5000>. The SQLite database is created automatically at
+`database/app.db` and seeded with sample lecturers on first run.
 
----
-*Note: This is an experimental project. All data is stored locally in the browser's cache.*
+### Configuration
+
+Settings live in `.env`:
+
+| Variable           | Default                     | Purpose                          |
+| ------------------ | --------------------------- | -------------------------------- |
+| `SECRET_KEY`       | `change-me-in-production`   | Flask session key                |
+| `DATABASE_URL`     | `sqlite:///database/app.db` | SQLAlchemy connection string     |
+| `HOST` / `PORT`    | `0.0.0.0` / `5000`          | Bind address                     |
+| `CORS_ORIGINS`     | `*`                         | Allowed frontend origins         |
+
+## API reference
+
+| Method | Endpoint                              | Description                         |
+| ------ | ------------------------------------- | ----------------------------------- |
+| GET    | `/api/health`                         | Service health check                |
+| GET    | `/api/lecturers`                      | List every lecturer with stats      |
+| GET    | `/api/lecturers/search?q=`            | Search lecturers by name            |
+| GET    | `/api/lecturers/{id}`                 | Lecturer profile + reviews          |
+| POST   | `/api/lecturers`                      | Create a lecturer                   |
+| GET    | `/api/reviews`                        | List reviews                        |
+| POST   | `/api/reviews`                        | Submit a review                     |
+| GET    | `/api/reviews/lecturer/{id}`          | Reviews for one lecturer            |
+| GET    | `/api/analytics/overview`             | Portal-wide analytics               |
+| GET    | `/api/analytics/lecturer/{id}`        | Per-lecturer analytics              |
+| GET    | `/api/academic-data`                  | Departments, units and lecturers    |
+| POST   | `/api/auth/signup`                    | Register a student                  |
+| POST   | `/api/auth/login`                     | Student login                       |
+| POST   | `/api/auth/admin/bootstrap`           | Create the first administrator      |
+| POST   | `/api/auth/admin/login`              | Administrator login                 |
+| GET    | `/api/lecturers/pins/{name}`          | Whether a lecturer has set a PIN    |
+| POST   | `/api/lecturers/pins`                 | Register/update a lecturer PIN      |
+| POST   | `/api/lecturers/login`                | Lecturer PIN login                  |
+
+## Optional Java microservice
+
+```bash
+cd backend-java
+mvn spring-boot:run     # http://localhost:8080
+```
+
+It shares the SQLite database at `../database/app.db` and exposes the same
+core endpoints. Set `DATABASE_URL` to override the connection.
+
+## Database
+
+Flask-SQLAlchemy creates the schema automatically. To initialize manually:
+
+```bash
+sqlite3 database/app.db < database/schema.sql
+```
+
+## Notes
+
+* Reviews are stored with a sentiment label computed by
+  `analytics_service.analyze_sentiment` (lexicon-based, no external services).
+* Passwords and lecturer PINs are hashed with Werkzeug (Python) / BCrypt (Java).
+* The frontend uses the API on the same origin; when opened from `file://` it
+  falls back to `http://localhost:5000/api`.

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Submit a lecturer review." />
+    <title>Add Review | NGU</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/components.css" />
+</head>
+<body data-page="add-review">
+    <header class="navbar">
+        <div class="container">
+            <a class="brand" href="index.html">NGU<span>.</span></a>
+            <nav class="nav-links">
+                <a href="index.html" data-page="home">Home</a>
+                <a href="index.html#lecturers" data-page="lecturer">Lecturers</a>
+                <a href="add-review.html" data-page="add-review">Write Review</a>
+                <a href="login.html" data-page="login">Portal</a>
+            </nav>
+            <div class="nav-actions">
+                <button class="theme-toggle" data-theme-toggle aria-label="Toggle colour theme">☾</button>
+                <span data-session-slot></span>
+            </div>
+        </div>
+    </header>
+
+    <main class="section">
+        <div class="container" style="max-width:720px;">
+            <div class="page-head">
+                <span class="eyebrow">Student Evaluation</span>
+                <h1>Submit a review</h1>
+                <p>Your feedback is anonymous by default. Share honest, constructive comments to help improve teaching quality.</p>
+            </div>
+
+            <div class="card">
+                <div id="form-error" class="alert alert-error hidden"></div>
+                <form id="review-form" novalidate>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="department-select">Department</label>
+                            <select id="department-select"></select>
+                        </div>
+                        <div class="form-group">
+                            <label for="lecturer-select">Lecturer</label>
+                            <select id="lecturer-select" required></select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="unit-select">Unit / Course</label>
+                        <select id="unit-select" required></select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="score-slider">Satisfaction score</label>
+                        <div class="score-readout" id="score-readout">75%</div>
+                        <input type="range" id="score-slider" min="0" max="100" value="75" step="1" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="review-comment">Comments</label>
+                        <textarea id="review-comment" placeholder="What worked well? What could be improved?"></textarea>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="reviewer-name">Your name (optional)</label>
+                            <input type="text" id="reviewer-name" placeholder="Anonymous" />
+                        </div>
+                        <div class="form-group">
+                            <label for="reviewer-email">Email (optional, not published)</label>
+                            <input type="email" id="reviewer-email" placeholder="you@ngu.edu" />
+                        </div>
+                    </div>
+
+                    <button class="btn btn-block" type="submit">Submit review</button>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div>
+                    <a class="brand" href="index.html">NGU<span>.</span></a>
+                    <p>Nexus Global University — anonymous, constructive lecturer evaluation.</p>
+                </div>
+                <div>
+                    <h4>Portal</h4>
+                    <a href="index.html">Lecturer search</a>
+                    <a href="add-review.html">Submit a review</a>
+                    <a href="login.html">Sign in</a>
+                </div>
+                <div>
+                    <h4>Contact</h4>
+                    <a href="mailto:info@ngu.edu">info@ngu.edu</a>
+                    <a href="#">Nairobi, Kenya</a>
+                    <a href="#">+254 700 000 000</a>
+                </div>
+            </div>
+            <div class="footer-bottom">© Nexus Global University. All rights reserved.</div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+</body>
+</html>
