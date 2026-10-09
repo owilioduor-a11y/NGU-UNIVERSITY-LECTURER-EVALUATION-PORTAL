@@ -1,7 +1,5 @@
 /* =========================================================================
-   Frontend interactivity and API requests
-   =========================================================================
-   Shared helpers plus a page initializer selected via  <body data-page="...">
+   EduReview — Frontend interactivity and API requests
    Pages: home | lecturer | add-review | login
    ========================================================================= */
 (function () {
@@ -51,52 +49,6 @@
     };
 
     /* --------------------------------------------------------------------- */
-    /* UI helpers                                                            */
-    /* --------------------------------------------------------------------- */
-    function escapeHTML(value) {
-        const node = document.createElement('div');
-        node.textContent = value == null ? '' : String(value);
-        return node.innerHTML;
-    }
-
-    function initials(name) {
-        return String(name || '?')
-            .replace(/[^A-Za-z ]/g, '')
-            .split(' ')
-            .filter(Boolean)
-            .slice(0, 2)
-            .map((part) => part[0].toUpperCase())
-            .join('');
-    }
-
-    function formatDate(value) {
-        if (!value) return '';
-        const date = new Date(value);
-        return Number.isNaN(date.getTime()) ? value : date.toLocaleString();
-    }
-
-    function toast(message, type = 'success') {
-        let host = qs('.toast-host');
-        if (!host) {
-            host = document.createElement('div');
-            host.className = 'toast-host';
-            document.body.appendChild(host);
-        }
-        const node = document.createElement('div');
-        node.className = `toast ${type}`;
-        node.textContent = message;
-        host.appendChild(node);
-        setTimeout(() => node.remove(), 3200);
-    }
-
-    function ratingBadge(score) {
-        const value = Number(score) || 0;
-        if (value >= 80) return 'badge-positive';
-        if (value >= 50) return 'badge-neutral';
-        return 'badge-negative';
-    }
-
-    /* --------------------------------------------------------------------- */
     /* Session helpers                                                       */
     /* --------------------------------------------------------------------- */
     const session = {
@@ -126,25 +78,132 @@
     };
 
     /* --------------------------------------------------------------------- */
-    /* Theme                                                                 */
+    /* UI helpers                                                            */
     /* --------------------------------------------------------------------- */
-    function initTheme() {
-        const stored = localStorage.getItem('ngu_theme') || 'light';
-        document.documentElement.setAttribute('data-theme', stored);
+    function escapeHTML(value) {
+        const node = document.createElement('div');
+        node.textContent = value == null ? '' : String(value);
+        return node.innerHTML;
+    }
 
-        qsa('[data-theme-toggle]').forEach((button) => {
-            button.textContent = stored === 'dark' ? '☀' : '☾';
-            button.addEventListener('click', () => {
-                const next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-                document.documentElement.setAttribute('data-theme', next);
-                localStorage.setItem('ngu_theme', next);
-                button.textContent = next === 'dark' ? '☀' : '☾';
-            });
-        });
+    function initials(name) {
+        return String(name || '?')
+            .replace(/[^A-Za-z ]/g, '')
+            .split(' ')
+            .filter(Boolean)
+            .slice(0, 2)
+            .map((part) => part[0].toUpperCase())
+            .join('');
+    }
+
+    function formatDate(value) {
+        if (!value) return '';
+        const date = new Date(value);
+        return Number.isNaN(date.getTime()) ? value : date.toLocaleString();
+    }
+
+    function truncate(text, max) {
+        const value = String(text || '').trim();
+        if (value.length <= max) return value;
+        return value.slice(0, max).replace(/\s+\S*$/, '') + '…';
+    }
+
+    function hashString(value) {
+        let hash = 0;
+        const text = String(value || '');
+        for (let i = 0; i < text.length; i++) {
+            hash = (hash << 5) - hash + text.charCodeAt(i);
+            hash |= 0;
+        }
+        return Math.abs(hash);
+    }
+
+    function toast(message, type = 'success') {
+        let host = qs('.toast-host');
+        if (!host) {
+            host = document.createElement('div');
+            host.className = 'toast-host';
+            document.body.appendChild(host);
+        }
+        const node = document.createElement('div');
+        node.className = `toast ${type}`;
+        node.textContent = message;
+        host.appendChild(node);
+        setTimeout(() => node.remove(), 3200);
+    }
+
+    function ratingBadge(score) {
+        const value = Number(score) || 0;
+        if (value <= 0) return 'badge-neutral';
+        if (value >= 80) return 'badge-positive';
+        if (value >= 50) return 'badge-neutral';
+        return 'badge-negative';
     }
 
     /* --------------------------------------------------------------------- */
-    /* Navbar                                                                */
+    /* Lecturer presentation helpers                                         */
+    /* --------------------------------------------------------------------- */
+    const HEADSHOTS = [
+        'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=900&h=675&q=80',
+        'https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&w=900&h=675&q=80',
+        'https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=900&h=675&q=80',
+        'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=900&h=675&q=80',
+        'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=900&h=675&q=80',
+        'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=900&h=675&q=80',
+        'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=900&h=675&q=80',
+        'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=900&h=675&q=80',
+        'https://images.unsplash.com/photo-1594744803329-e58b31de8bf5?auto=format&fit=crop&w=900&h=675&q=80',
+        'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=900&h=675&q=80',
+    ];
+
+    function headshotFor(lecturer) {
+        return HEADSHOTS[hashString(lecturer.name) % HEADSHOTS.length];
+    }
+
+    function lecturerTitle(name) {
+        const normalized = String(name || '').toLowerCase();
+        if (normalized.startsWith('prof')) return 'Professor';
+        if (normalized.startsWith('dr')) return 'Senior Lecturer · Principal Researcher';
+        if (normalized.startsWith('mr') || normalized.startsWith('ms') || normalized.startsWith('mrs')) return 'Lecturer';
+        return 'Faculty Member';
+    }
+
+    function formatRatingText(score) {
+        const value = Number(score) || 0;
+        return value > 0 ? (value / 20).toFixed(1) : null;
+    }
+
+    /* --------------------------------------------------------------------- */
+    /* Shared: lecturer card                                                 */
+    /* --------------------------------------------------------------------- */
+    function renderLecturerCard(lecturer, snippet) {
+        const rating = formatRatingText(lecturer.average_rating);
+        const photo = headshotFor(lecturer);
+        return `
+            <article class="lecturer-card">
+                <a class="lecturer-photo" href="lecturer.html?id=${lecturer.id}" aria-label="${escapeHTML(lecturer.name)}">
+                    <img src="${photo}" alt="${escapeHTML(lecturer.name)}" loading="lazy" />
+                    <span class="dept-tag">${escapeHTML(lecturer.department)}</span>
+                </a>
+                <div class="lecturer-body">
+                    <div>
+                        <h3 class="lecturer-name">
+                            <a href="lecturer.html?id=${lecturer.id}">${escapeHTML(lecturer.name)}</a>
+                        </h3>
+                        <p class="lecturer-title mb-0">${escapeHTML(lecturerTitle(lecturer.name))}</p>
+                    </div>
+                    <div class="flex items-end justify-between">
+                        <div class="rating-display">${rating ? `${rating} <small>/ 5.0</small>` : '<span class="text-sm text-gray-400">No ratings</span>'}</div>
+                        <span class="badge ${ratingBadge(lecturer.average_rating)}">${lecturer.review_count} review${lecturer.review_count === 1 ? '' : 's'}</span>
+                    </div>
+                    <p class="review-snippet">${snippet ? `<i class="fa-solid fa-quote-left" aria-hidden="true"></i>&ldquo;${escapeHTML(truncate(snippet.comment, 96))}&rdquo;` : 'No written feedback yet — be the first to review.'}</p>
+                    <a class="btn btn-outline btn-sm btn-block mt-auto" href="add-review.html?lecturer_id=${lecturer.id}">Write a Review</a>
+                </div>
+            </article>`;
+    }
+
+    /* --------------------------------------------------------------------- */
+    /* Navbar, search & mobile menu                                          */
     /* --------------------------------------------------------------------- */
     function initNavbar() {
         const active = document.body.dataset.page;
@@ -157,101 +216,180 @@
             const user = session.current();
             if (user) {
                 slot.innerHTML = `
-                    <span class="muted" style="color:#cbd0d8;font-size:0.8rem;">${escapeHTML(user.name)}</span>
+                    <span class="text-sm text-gray-600 hidden sm:inline">${escapeHTML(user.name)}</span>
                     <button class="btn btn-sm btn-outline" data-logout>Logout</button>`;
                 qs('[data-logout]', slot).addEventListener('click', () => {
                     session.logout();
                     toast('Signed out');
-                    setTimeout(() => window.location.reload(), 500);
+                    setTimeout(() => window.location.reload(), 450);
                 });
             } else {
-                slot.innerHTML = '<a class="btn btn-sm" href="login.html">Sign in</a>';
+                slot.innerHTML = '<a class="btn btn-sm" href="login.html">Sign In</a>';
             }
         }
-    }
 
-    /* --------------------------------------------------------------------- */
-    /* Shared: lecturer card                                                 */
-    /* --------------------------------------------------------------------- */
-    function renderLecturerCard(lecturer) {
-        const avg = Number(lecturer.average_rating || 0).toFixed(1);
-        return `
-            <article class="card lecturer-card">
-                <div class="lecturer-card-head">
-                    <div class="avatar">${escapeHTML(initials(lecturer.name))}</div>
-                    <div>
-                        <h3 class="card-title">
-                            <a href="lecturer.html?id=${lecturer.id}">${escapeHTML(lecturer.name)}</a>
-                        </h3>
-                        <div class="card-sub">${escapeHTML(lecturer.department)}</div>
-                    </div>
-                </div>
-                <div style="display:flex;justify-content:space-between;align-items:center;">
-                    <span class="rating">${avg}</span>
-                    <span class="badge ${ratingBadge(lecturer.average_rating)}">${lecturer.review_count} review${lecturer.review_count === 1 ? '' : 's'}</span>
-                </div>
-                <a class="btn btn-sm btn-block" href="add-review.html?lecturer_id=${lecturer.id}">Write a review</a>
-            </article>`;
+        qsa('[data-nav-search]').forEach((form) => {
+            form.addEventListener('submit', (event) => {
+                event.preventDefault();
+                const input = qs('[data-nav-search-input]', form);
+                const query = (input && input.value || '').trim();
+                window.location.href = query
+                    ? `index.html?q=${encodeURIComponent(query)}#directory`
+                    : 'index.html#directory';
+            });
+        });
+
+        const toggle = qs('[data-nav-toggle]');
+        const panel = qs('[data-nav-panel]');
+        if (toggle && panel) {
+            toggle.addEventListener('click', () => {
+                const open = !panel.classList.contains('hidden');
+                panel.classList.toggle('hidden', open);
+                toggle.setAttribute('aria-expanded', String(!open));
+            });
+        }
     }
 
     /* --------------------------------------------------------------------- */
     /* Page: home                                                            */
     /* --------------------------------------------------------------------- */
+    function renderDepartmentGrid(departments, lecturers) {
+        const host = qs('#department-grid');
+        if (!host) return;
+        if (!departments.length) {
+            host.innerHTML = '<div class="empty-state" style="grid-column:1/-1;">No departments available.</div>';
+            return;
+        }
+        host.innerHTML = departments
+            .map((dept) => {
+                const count = lecturers.filter((lecturer) => lecturer.department === dept).length;
+                return `
+                    <a class="department-card" href="index.html?department=${encodeURIComponent(dept)}#directory">
+                        <div class="flex items-center justify-between">
+                            <span class="eyebrow">School</span>
+                            <span class="badge badge-brand">${count} Members</span>
+                        </div>
+                        <h3 class="dep-name mt-4 mb-1">${escapeHTML(dept)}</h3>
+                        <p class="muted text-sm mb-0">Browse faculty, ratings and student evaluations.</p>
+                    </a>`;
+            })
+            .join('');
+    }
+
     async function initHome() {
         const grid = qs('#lecturer-grid');
         const searchInput = qs('#search-input');
         const deptFilter = qs('#department-filter');
+        const sortSelect = qs('#sort-select');
         const countLabel = qs('#result-count');
+        const params = new URLSearchParams(window.location.search);
 
         let lecturers = [];
+        const snippetMap = new Map();
+
+        function snippetFor(id) {
+            const list = snippetMap.get(id);
+            return list && list.length ? list[0] : null;
+        }
 
         function render(list) {
             if (!list.length) {
                 grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1;">No lecturers match your search.</div>';
-                countLabel.textContent = '0 results';
+                countLabel.textContent = '0 lecturers';
                 return;
             }
-            grid.innerHTML = list.map(renderLecturerCard).join('');
-            countLabel.textContent = `${list.length} result${list.length === 1 ? '' : 's'}`;
+            grid.innerHTML = list.map((lecturer) => renderLecturerCard(lecturer, snippetFor(lecturer.id))).join('');
+            countLabel.textContent = `${list.length} lecturer${list.length === 1 ? '' : 's'}`;
         }
 
         function applyFilters() {
             const term = (searchInput.value || '').trim().toLowerCase();
             const dept = deptFilter.value;
-            render(
-                lecturers.filter((lecturer) => {
-                    const matchesTerm = !term || lecturer.name.toLowerCase().includes(term);
-                    const matchesDept = !dept || lecturer.department === dept;
-                    return matchesTerm && matchesDept;
-                })
-            );
+
+            let list = lecturers.filter((lecturer) => {
+                const matchesTerm =
+                    !term ||
+                    lecturer.name.toLowerCase().includes(term) ||
+                    (lecturer.department || '').toLowerCase().includes(term);
+                const matchesDept = !dept || lecturer.department === dept;
+                return matchesTerm && matchesDept;
+            });
+
+            const sort = sortSelect ? sortSelect.value : 'name';
+            if (sort === 'rating') {
+                list = list.slice().sort((a, b) => (b.average_rating || 0) - (a.average_rating || 0));
+            } else if (sort === 'reviews') {
+                list = list.slice().sort((a, b) => (b.review_count || 0) - (a.review_count || 0));
+            } else {
+                list = list.slice().sort((a, b) => a.name.localeCompare(b.name));
+            }
+
+            render(list);
         }
 
         try {
-            grid.innerHTML = '<div class="skeleton" style="grid-column:1/-1;"></div>'.repeat(6);
-            const [data, departments] = await Promise.all([
+            const [data, departments, reviews] = await Promise.all([
                 api.get('/lecturers'),
                 api.get('/departments'),
+                api.get('/reviews').catch(() => []),
             ]);
-            lecturers = data;
+
+            lecturers = data || [];
+
+            (reviews || []).forEach((review) => {
+                if (review.comment && review.comment.trim()) {
+                    if (!snippetMap.has(review.lecturer_id)) snippetMap.set(review.lecturer_id, []);
+                    snippetMap.get(review.lecturer_id).push(review);
+                }
+            });
+
             deptFilter.innerHTML =
-                '<option value="">All departments</option>' +
+                '<option value="">All Departments</option>' +
                 departments.map((d) => `<option value="${escapeHTML(d)}">${escapeHTML(d)}</option>`).join('');
-            render(lecturers);
+
+            renderDepartmentGrid(departments, lecturers);
+
+            const preset = params.get('q');
+            if (preset) searchInput.value = preset;
+
+            const presetDept = params.get('department');
+            if (presetDept) deptFilter.value = presetDept;
+
+            const presetSort = params.get('sort');
+            if (presetSort && sortSelect) sortSelect.value = presetSort;
+
+            applyFilters();
         } catch (error) {
             grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1;">${escapeHTML(error.message)}</div>`;
+            countLabel.textContent = 'Error loading';
         }
 
         searchInput.addEventListener('input', applyFilters);
         deptFilter.addEventListener('change', applyFilters);
+        if (sortSelect) sortSelect.addEventListener('change', applyFilters);
+
+        const heroForm = qs('[data-hero-search]');
+        if (heroForm) {
+            heroForm.addEventListener('submit', (event) => {
+                event.preventDefault();
+                const input = qs('[data-hero-search-input]', heroForm);
+                const query = (input && input.value || '').trim();
+                if (query) {
+                    window.location.href = `index.html?q=${encodeURIComponent(query)}#directory`;
+                } else {
+                    const target = qs('#directory');
+                    if (target) target.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        }
     }
 
     /* --------------------------------------------------------------------- */
     /* Page: lecturer profile                                                */
     /* --------------------------------------------------------------------- */
     async function initLecturerPage() {
-        const id = new URLSearchParams(window.location.search).get('id');
         const host = qs('#lecturer-profile');
+        const id = new URLSearchParams(window.location.search).get('id');
 
         if (!id) {
             host.innerHTML = '<div class="empty-state">No lecturer selected. <a href="index.html">Browse lecturers</a>.</div>';
@@ -260,20 +398,29 @@
 
         try {
             const lecturer = await api.get(`/lecturers/${id}`);
-            document.title = `${lecturer.name} | NGU Lecturer Reviews`;
+            document.title = `${lecturer.name} | EduReview`;
+
             qs('#lecturer-name').textContent = lecturer.name;
             qs('#lecturer-department').textContent = lecturer.department;
-            qs('#lecturer-avatar').textContent = initials(lecturer.name);
+            qs('#lecturer-role').textContent = lecturerTitle(lecturer.name);
+
+            const photo = qs('#lecturer-photo');
+            photo.src = headshotFor(lecturer);
+            photo.alt = lecturer.name;
+
+            const rating = formatRatingText(lecturer.average_rating);
+            qs('#lecturer-rating').innerHTML = rating ? `${rating} <small>/ 5.0</small>` : '—';
+            qs('#lecturer-review-count').textContent = lecturer.review_count;
 
             const stats = qs('#lecturer-stats');
             stats.innerHTML = `
-                <div class="stat"><div class="stat-value">${Number(lecturer.average_rating).toFixed(1)}%</div><div class="stat-label">Average rating</div></div>
-                <div class="stat"><div class="stat-value">${lecturer.review_count}</div><div class="stat-label">Total reviews</div></div>
-                <div class="stat"><div class="stat-value">${lecturer.highest ?? 0}%</div><div class="stat-label">Highest score</div></div>
-                <div class="stat"><div class="stat-value">${lecturer.lowest ?? 0}%</div><div class="stat-label">Lowest score</div></div>`;
+                <div class="stat"><div class="stat-value">${rating || '—'}</div><div class="stat-label">Average / 5.0</div></div>
+                <div class="stat"><div class="stat-value">${lecturer.review_count}</div><div class="stat-label">Total Reviews</div></div>
+                <div class="stat"><div class="stat-value">${lecturer.highest ?? 0}<span class="text-base">%</span></div><div class="stat-label">Highest Score</div></div>
+                <div class="stat"><div class="stat-value">${lecturer.lowest ?? 0}<span class="text-base">%</span></div><div class="stat-label">Lowest Score</div></div>`;
 
             renderBars(qs('#score-distribution'), lecturer.distribution, {
-                '0-20': '0-20%', '21-40': '21-40%', '41-60': '41-60%', '61-80': '61-80%', '81-100': '81-100%',
+                '0-20': '0–20%', '21-40': '21–40%', '41-60': '41–60%', '61-80': '61–80%', '81-100': '81–100%',
             }, 'brand');
 
             renderBars(qs('#sentiment-breakdown'), lecturer.sentiment, {
@@ -282,7 +429,7 @@
 
             const list = qs('#review-list');
             if (!lecturer.reviews.length) {
-                list.innerHTML = '<div class="empty-state">No reviews yet. Be the first to review.</div>';
+                list.innerHTML = '<div class="empty-state">No reviews yet. Be the first to review this lecturer.</div>';
             } else {
                 list.innerHTML = lecturer.reviews.map(renderReview).join('');
             }
@@ -315,14 +462,14 @@
         return `
             <div class="review-item">
                 <div class="review-head">
-                    <span><strong>${escapeHTML(review.student_name || 'Anonymous')}</strong> · ${escapeHTML(review.unit)}</span>
+                    <span><strong>${escapeHTML(review.student_name || 'Anonymous')}</strong> &middot; ${escapeHTML(review.unit)}</span>
                     <span class="review-score">${review.score}%</span>
                 </div>
                 <div class="review-head">
                     <span>${escapeHTML(formatDate(review.created_at))}</span>
                     <span class="badge badge-${escapeHTML(review.sentiment)}">${escapeHTML(review.sentiment)}</span>
                 </div>
-                ${review.comment ? `<p class="review-comment">${escapeHTML(review.comment)}</p>` : ''}
+                ${review.comment ? `<p class="review-comment"><i class="fa-solid fa-quote-left" aria-hidden="true"></i>${escapeHTML(review.comment)}</p>` : ''}
             </div>`;
     }
 
@@ -334,12 +481,21 @@
         const lecturerSelect = qs('#lecturer-select');
         const departmentSelect = qs('#department-select');
         const unitSelect = qs('#unit-select');
-        const slider = qs('#score-slider');
-        const readout = qs('#score-readout');
         const errorBox = qs('#form-error');
+        const metricInputs = qsa('[data-metric]');
 
         const params = new URLSearchParams(window.location.search);
         const presetLecturer = params.get('lecturer_id');
+
+        function syncMetricReadouts() {
+            metricInputs.forEach((input) => {
+                const readout = qs(`[data-metric-value="${input.dataset.metric}"]`);
+                if (readout) readout.textContent = input.value;
+            });
+        }
+
+        metricInputs.forEach((input) => input.addEventListener('input', syncMetricReadouts));
+        syncMetricReadouts();
 
         try {
             const [data, departments] = await Promise.all([
@@ -357,7 +513,9 @@
 
             function fillLecturers() {
                 const dept = departmentSelect.value;
-                const list = dept ? data.lecturers.filter((l) => l.department === dept) : data.lecturers;
+                const list = dept
+                    ? data.lecturers.filter((l) => l.department === dept)
+                    : data.lecturers;
                 lecturerSelect.innerHTML =
                     '<option value="">Select lecturer</option>' +
                     list.map((l) => `<option value="${l.id}">${escapeHTML(l.name)}</option>`).join('');
@@ -378,10 +536,6 @@
             errorBox.classList.remove('hidden');
         }
 
-        slider.addEventListener('input', () => {
-            readout.textContent = `${slider.value}%`;
-        });
-
         const student = session.student.get();
         if (student) {
             qs('#reviewer-name').value = student.name || '';
@@ -392,10 +546,18 @@
             event.preventDefault();
             errorBox.classList.add('hidden');
 
+            const metrics = {};
+            metricInputs.forEach((input) => {
+                metrics[input.dataset.metric] = parseInt(input.value, 10);
+            });
+            const values = Object.values(metrics);
+            const score = Math.round((values.reduce((sum, v) => sum + v, 0) / (values.length * 5)) * 100);
+
             const payload = {
                 lecturer_id: lecturerSelect.value,
                 unit: unitSelect.value,
-                score: parseInt(slider.value, 10),
+                score,
+                metrics,
                 comment: qs('#review-comment').value,
                 student_name: qs('#reviewer-name').value || 'Anonymous',
                 student_email: qs('#reviewer-email').value || null,
@@ -437,7 +599,6 @@
             });
         });
 
-        // Student login
         qs('#student-login-form').addEventListener('submit', async (event) => {
             event.preventDefault();
             try {
@@ -480,7 +641,6 @@
             }
         });
 
-        // Lecturer login
         const lecturerName = qs('#lecturer-name');
         const pinEntry = qs('#pin-entry');
         const pinSetup = qs('#pin-setup');
@@ -527,7 +687,6 @@
             }
         });
 
-        // Admin login
         qs('#admin-login-form').addEventListener('submit', async (event) => {
             event.preventDefault();
             try {
@@ -574,7 +733,6 @@
     };
 
     document.addEventListener('DOMContentLoaded', () => {
-        initTheme();
         initNavbar();
         const init = pages[document.body.dataset.page];
         if (init) init();

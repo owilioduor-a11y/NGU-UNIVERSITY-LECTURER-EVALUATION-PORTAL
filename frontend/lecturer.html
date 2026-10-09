@@ -1,75 +1,169 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Lecturer profile and student reviews." />
-    <title>Lecturer Profile | NGU</title>
+    <meta name="description" content="Lecturer profile and verified student evaluations — EduReview." />
+    <title>Lecturer Profile | EduReview</title>
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        crimson: { DEFAULT: '#A51C30', dark: '#7B1220', light: '#C4243C' },
+                        slateink: '#2B2B2A',
+                        offwhite: '#F8F9FA'
+                    },
+                    fontFamily: {
+                        serif: ['"Playfair Display"', '"EB Garamond"', 'Georgia', 'Garamond', '"Times New Roman"', 'serif'],
+                        sans: ['Inter', 'Arial', 'Roboto', 'Helvetica', 'sans-serif']
+                    }
+                }
+            }
+        };
+    </script>
+
     <link rel="stylesheet" href="css/style.css" />
     <link rel="stylesheet" href="css/components.css" />
 </head>
 <body data-page="lecturer">
-    <header class="navbar">
-        <div class="container">
-            <a class="brand" href="index.html">NGU<span>.</span></a>
-            <nav class="nav-links">
-                <a href="index.html" data-page="home">Home</a>
-                <a href="index.html#lecturers" data-page="lecturer">Lecturers</a>
-                <a href="add-review.html" data-page="add-review">Write Review</a>
-                <a href="login.html" data-page="login">Portal</a>
+    <a href="#main" class="skip-link">Skip to content</a>
+
+    <!-- Utility bar -->
+    <div class="utility-bar">
+        <div class="shell flex items-center justify-between h-9">
+            <span class="hidden sm:inline">Nexus Global University &middot; Office of Academic Quality</span>
+            <span class="sm:hidden">Nexus Global University</span>
+            <nav class="flex items-center gap-5">
+                <a href="login.html">myNGU</a>
+                <a href="index.html#departments">Schools</a>
+                <a href="#" class="hidden sm:inline">Give</a>
             </nav>
-            <div class="nav-actions">
-                <button class="theme-toggle" data-theme-toggle aria-label="Toggle colour theme">☾</button>
-                <span data-session-slot></span>
+        </div>
+    </div>
+
+    <!-- Main navigation -->
+    <header class="main-nav">
+        <div class="shell">
+            <div class="flex items-center justify-between gap-4 py-3.5">
+                <a class="brand" href="index.html">
+                    <span class="brand-mark">E</span>
+                    <span>EduReview<span class="brand-dot">.</span></span>
+                </a>
+
+                <form class="nav-search hidden md:flex flex-1 max-w-md mx-4" data-nav-search role="search">
+                    <input type="search" placeholder="Search lecturers or departments…" aria-label="Search" autocomplete="off" data-nav-search-input />
+                    <button type="submit"><i class="fa-solid fa-magnifying-glass"></i> Search</button>
+                </form>
+
+                <nav class="nav-links hidden lg:flex">
+                    <a href="index.html#departments">Browse Departments</a>
+                    <a href="index.html?sort=rating#directory">Top Rated</a>
+                    <a href="add-review.html" data-page="add-review">Write a Review</a>
+                </nav>
+
+                <div class="flex items-center gap-3">
+                    <span class="inline-flex items-center gap-2" data-session-slot></span>
+                    <button class="nav-toggle lg:hidden" data-nav-toggle aria-label="Open menu" aria-expanded="false">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                            <line x1="3" y1="6" x2="21" y2="6"></line>
+                            <line x1="3" y1="12" x2="21" y2="12"></line>
+                            <line x1="3" y1="18" x2="21" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="mobile-nav hidden lg:hidden" data-nav-panel>
+            <div class="shell py-4 flex flex-col gap-4">
+                <form class="nav-search flex w-full" data-nav-search role="search">
+                    <input type="search" placeholder="Search lecturers…" aria-label="Search" data-nav-search-input />
+                    <button type="submit"><i class="fa-solid fa-magnifying-glass"></i> Search</button>
+                </form>
+                <nav class="flex flex-col gap-3">
+                    <a href="index.html#departments">Browse Departments</a>
+                    <a href="index.html?sort=rating#directory">Top Rated</a>
+                    <a href="add-review.html">Write a Review</a>
+                    <a href="login.html">Sign In</a>
+                </nav>
             </div>
         </div>
     </header>
 
-    <main class="section" id="lecturer-profile">
-        <div class="container">
-            <div class="card" style="display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap;">
-                <div class="avatar" id="lecturer-avatar" style="width:72px;height:72px;font-size:1.5rem;">?</div>
-                <div style="flex:1;min-width:220px;">
+    <main id="main" class="section-space">
+        <div class="shell" id="lecturer-profile">
+            <div class="grid grid-cols-1 lg:grid-cols-[260px_1fr] gap-8 lg:gap-10 items-start">
+                <img id="lecturer-photo" class="profile-photo" src="" alt="" />
+                <div>
                     <span class="eyebrow" id="lecturer-department">Department</span>
-                    <h1 id="lecturer-name" style="margin:0.2rem 0 0;">Loading…</h1>
+                    <h1 id="lecturer-name" class="mt-2 mb-1">Loading…</h1>
+                    <p class="lecturer-title text-base mb-5" id="lecturer-role">Faculty Member</p>
+
+                    <div class="flex flex-wrap items-end gap-x-10 gap-y-6">
+                        <div>
+                            <div class="rating-display" id="lecturer-rating">—</div>
+                            <div class="text-xs uppercase tracking-widest text-gray-500 mt-1">Average Rating</div>
+                        </div>
+                        <div>
+                            <div class="font-serif text-3xl font-bold text-slateink" id="lecturer-review-count">0</div>
+                            <div class="text-xs uppercase tracking-widest text-gray-500 mt-1">Student Reviews</div>
+                        </div>
+                        <a class="btn lg:ml-auto" id="write-review-link" href="add-review.html">Write a Review</a>
+                    </div>
                 </div>
-                <a class="btn" id="write-review-link" href="add-review.html">Write a review</a>
             </div>
 
-            <div class="stat-grid" id="lecturer-stats" style="margin:2rem 0;"></div>
+            <div class="stat-grid mt-10" id="lecturer-stats"></div>
 
-            <div class="grid grid-2">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-10">
                 <div class="card">
-                    <h3>Score distribution</h3>
-                    <p class="card-sub" style="margin-bottom:1rem;">How students scored this lecturer.</p>
+                    <h3 class="mb-1">Score Distribution</h3>
+                    <p class="muted text-sm mb-4">How students scored this lecturer.</p>
                     <div id="score-distribution"></div>
                 </div>
                 <div class="card">
-                    <h3>Sentiment analysis</h3>
-                    <p class="card-sub" style="margin-bottom:1rem;">Tone of written feedback.</p>
+                    <h3 class="mb-1">Sentiment Analysis</h3>
+                    <p class="muted text-sm mb-4">The tone of written feedback.</p>
                     <div id="sentiment-breakdown"></div>
                 </div>
             </div>
 
-            <h2 style="margin:2.5rem 0 1rem;">Student reviews</h2>
-            <div id="review-list"></div>
+            <div class="mt-12 mb-5">
+                <span class="eyebrow">Feedback</span>
+                <h2 class="mt-2 mb-0">Student Reviews</h2>
+                <div class="section-rule"></div>
+            </div>
+            <div id="review-list">
+                <div class="skeleton" style="min-height:110px;"></div>
+            </div>
         </div>
     </main>
 
+    <!-- Footer -->
     <footer class="site-footer">
-        <div class="container">
-            <div class="footer-grid">
-                <div>
-                    <a class="brand" href="index.html">NGU<span>.</span></a>
-                    <p>Nexus Global University — anonymous, constructive lecturer evaluation.</p>
+        <div class="shell">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div class="lg:col-span-2">
+                    <a class="brand" href="index.html" style="color:#fff !important;">
+                        <span class="brand-mark">E</span>
+                        <span>EduReview<span class="brand-dot">.</span></span>
+                    </a>
+                    <p class="mt-4 max-w-sm">Anonymous, constructive lecturer evaluation for the NGU community.</p>
                 </div>
                 <div>
                     <h4>Portal</h4>
-                    <a href="index.html">Lecturer search</a>
-                    <a href="add-review.html">Submit a review</a>
-                    <a href="login.html">Sign in</a>
+                    <a href="index.html">Lecturer Search</a>
+                    <a href="add-review.html">Submit a Review</a>
+                    <a href="index.html#departments">Departments</a>
+                    <a href="login.html">Sign In</a>
                 </div>
                 <div>
                     <h4>Contact</h4>
@@ -78,7 +172,10 @@
                     <a href="#">+254 700 000 000</a>
                 </div>
             </div>
-            <div class="footer-bottom">© Nexus Global University. All rights reserved.</div>
+            <div class="footer-bottom flex flex-col sm:flex-row items-center justify-between gap-2">
+                <span>&copy; Nexus Global University. All rights reserved.</span>
+                <span>Office of Academic Quality &amp; Institutional Research</span>
+            </div>
         </div>
     </footer>
 
